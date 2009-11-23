@@ -1,0 +1,24 @@
+active_record_random_find
+=========================
+
+Inspired by http://weblog.jamisbuck.org/2006/10/7/helping-activerecord-finders-help-you
+
+How to find a random model in the database using ActiveRecord
+
+Step 1: In your rails root, do this:
+
+./script/plugin install git://github.com/mshiltonj/active_record_random_find
+
+Step 2: Starting finding random models:
+
+winnner = User.find :random
+
+Step 3:
+
+PROFIT!!!!!!!
+
+
+COPYRIGHT
+=========
+
+Copyright (c) 2008 Steven Hilton. See LICENSE for details.

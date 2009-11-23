@@ -1,0 +1,2 @@
+module MagazineHelper
+end

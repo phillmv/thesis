@@ -1,0 +1,8 @@
+%h1
+  HELLO WORLD
+
+- @entries.each do |e|
+  %h2
+    %a{:href => e.url}=e.title
+  = e.summary
+
