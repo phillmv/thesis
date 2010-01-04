@@ -1,8 +1,28 @@
-%h1
-  HELLO WORLD
+.grid_8
+  %h1
+    Hello World,
 
-- @entries.each do |e|
-  %h2
-    %a{:href => e.url}=e.title
-  = e.summary
-
+#content
+  - last_date = nil
+  - @entries.each do |e|
+    .clear
+      foo
+    .grid_2
+      - if last_date != e.published.yday then
+        .date
+          %h2
+            =" #{e.published.strftime "%b %d"}"
+        - last_date = e.published.yday
+      - else
+        %br/
+          
+    .grid_7
+      %div{ :id => "entry_#{e.id}", :class => "entry"}
+        %h2.title
+          %a{:href => e.url}="• #{e.title}"
+        %h3.origin
+          %a{:href => e.feed.url}= "#{e.feed.title}"
+        .summary
+          = e.summary
+        .content
+          = e.content

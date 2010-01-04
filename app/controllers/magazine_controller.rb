@@ -1,6 +1,6 @@
 class MagazineController < ApplicationController
 
   def index
-    @entries = Entry.shuffled
+    @entries = Entry.find(:all, :order => "published DESC", :limit => 30)
   end
 end

@@ -1,4 +1,5 @@
 class Feed < ActiveRecord::Base
+  has_many :entries
   def self.parse(feed)
     f = Feed.find_or_create_by_url(feed.url)
     f.url = feed.url

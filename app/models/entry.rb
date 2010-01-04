@@ -1,6 +1,8 @@
 class Entry < ActiveRecord::Base
   belongs_to :feed
 
+  named_scope :unread, :order => "published ASC", :conditions => { :read => nil }
+
   def self.shuffled
     shuffle!(self.all)
   end
