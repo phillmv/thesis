@@ -3,7 +3,7 @@
 development:
   adapter: mysql
   user: root
-  database: thesis
+  database: feeds
 
 
 # Warning: The database defined as "test" will be erased and
