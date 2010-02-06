@@ -13,8 +13,21 @@ set :scm, :git
 set :scm_command, "/usr/bin/git"
 set :deploy_via, :remote_cache
 
+set :use_sudo, false
 ssh_options[:forward_agent] = true
 
 role :app, "okayfail.com"
 role :web, "okayfail.com"
 role :db,  "okayfail.com", :primary => true
+
+namespace :deploy do
+
+  desc 'Restarting Phusion Passenger.'
+  task :restart, :roles => :app, :except => { :no_release => true } do
+    run "touch #{current_path}/tmp/restart.txt"
+  end
+  [:start, :stop].each do |t|
+    desc "#{t} task is a no-op with mod_rails"
+    task t, :roles => :app do ; end
+  end
+end
