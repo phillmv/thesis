@@ -14,7 +14,7 @@ wd = File.expand_path('../', __FILE__)
 log("STARTING UP")
 
 loop do
-  feed_urls = Feed.all.collect { |f| f.url }
+  feed_urls = Feed.all.collect { |f| f.feed_url }
 
   log("UPDATING FEEDS", feed_urls)
 
