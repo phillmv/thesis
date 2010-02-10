@@ -22,6 +22,7 @@
           %a{:href => e.url}="• #{e.title}"
         %h3.origin
           %a{:href => e.feed.url}= "#{e.feed.title}"
+        = e.published
         .summary
           = e.summary
         .content

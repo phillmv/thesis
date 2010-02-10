@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091123043835) do
+ActiveRecord::Schema.define(:version => 20100209002650) do
 
   create_table "branches", :force => true do |t|
     t.datetime "created_at"
@@ -19,12 +19,11 @@ ActiveRecord::Schema.define(:version => 20091123043835) do
   create_table "entries", :force => true do |t|
     t.string   "title"
     t.string   "url"
-    t.string   "feed_url"
     t.date     "last_modified"
     t.string   "author"
     t.text     "summary"
     t.text     "content"
-    t.date     "published"
+    t.datetime "published"
     t.date     "read"
     t.integer  "feed_id"
     t.datetime "created_at"
@@ -35,7 +34,7 @@ ActiveRecord::Schema.define(:version => 20091123043835) do
     t.string   "title"
     t.string   "url"
     t.string   "feed_url"
-    t.date     "last_modified"
+    t.datetime "last_modified"
     t.string   "etag"
     t.datetime "created_at"
     t.datetime "updated_at"

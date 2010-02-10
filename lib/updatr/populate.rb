@@ -16,13 +16,20 @@ log("STARTING UP")
 loop do
   feed_urls = Feed.all.collect { |f| f.feed_url }
 
+  feed_urls.each { |f| puts f }
+
   log("UPDATING FEEDS", feed_urls)
 
   feeds = Feedzirra::Feed.fetch_and_parse(feed_urls)
   feeds.keys.each { |u|
     Feed.parse(feeds[u])
+    if ARGV[0] == 'dev' then
+      puts u
+#      puts feeds[u].title
+    end
   }
-  sleep 60 * 60 #1 hr
+#  sleep 60 * 60 #1 hr
+  exit
 end
 
 
