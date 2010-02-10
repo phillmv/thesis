@@ -21,7 +21,7 @@
         %h2.title
           %a{:href => e.url}="• #{e.title}"
         %h3.origin
-          %a{:href => e.feed.url}= "#{e.feed.title}"
+          %a{:href => e.subscription.url}= "#{e.subscription.title}"
         = e.published
         .summary
           = e.summary

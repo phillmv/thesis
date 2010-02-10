@@ -1,5 +1,5 @@
 class Entry < ActiveRecord::Base
-  belongs_to :feed
+  belongs_to :subscription
 
   named_scope :unread, :order => "published ASC", :conditions => { :read => nil }
 

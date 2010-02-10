@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100209002650) do
+ActiveRecord::Schema.define(:version => 20100210012457) do
 
   create_table "branches", :force => true do |t|
     t.datetime "created_at"
@@ -25,23 +25,23 @@ ActiveRecord::Schema.define(:version => 20100209002650) do
     t.text     "content"
     t.datetime "published"
     t.date     "read"
-    t.integer  "feed_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "feeds", :force => true do |t|
-    t.string   "title"
-    t.string   "url"
-    t.string   "feed_url"
-    t.datetime "last_modified"
-    t.string   "etag"
+    t.integer  "subscription_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "streams", :force => true do |t|
     t.integer  "branch_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "subscriptions", :force => true do |t|
+    t.string   "title"
+    t.string   "url"
+    t.string   "feed_url"
+    t.datetime "last_modified"
+    t.string   "etag"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
