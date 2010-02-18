@@ -4,6 +4,7 @@ require 'feedzirra'
 
 SLEEPTIME = 3600 # 1hr
 
+DEBUG = false
 #cmdline option, 'debug' will log more & will not sleep.
 DEBUG = true if ARGV[0] == "debug"
 
