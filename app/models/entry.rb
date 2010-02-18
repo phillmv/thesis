@@ -7,16 +7,18 @@ class Entry < ActiveRecord::Base
     shuffle!(self.all)
   end
 
-  def self.parse(entry, feed)
-    e = Entry.find_or_create_by_url(entry.url)
-    e.title = entry.title
-    e.feed = feed
-    e.summary = entry.summary
-    e.content = entry.content
-    e.published = entry.published
-    e.author = entry.author
+  def self.parse(entries, subscription)
+    entries.each { |entry|
+      e = Entry.find_or_create_by_url(entry.url)
+      e.title = entry.title
+      e.subscription = subscription
+      e.summary = entry.summary
+      e.content = entry.content
+      e.published = entry.published
+      e.author = entry.author
 
-    e.save!
+      e.save!
+    }
   end
 
   private

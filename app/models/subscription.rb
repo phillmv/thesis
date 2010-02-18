@@ -1,5 +1,7 @@
 class Subscription < ActiveRecord::Base
   has_many :entries
+=begin
+  # TODO: need to add new subscriptions
   def self.parse(feed)
     f = Subscription.find_or_create_by_url(feed.url)
     f.url = feed.url
@@ -12,5 +14,14 @@ class Subscription < ActiveRecord::Base
     feed.entries.each { |e|
       Entry.parse(e, f)
     }
+  end
+=end
+
+  def self.size
+    self.count_by_sql("select count(id) from subscriptions")
+  end
+
+  def add_entries(entries)
+    Entry.parse(entries, self)
   end
 end
