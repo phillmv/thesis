@@ -2,11 +2,9 @@
 require File.expand_path('../../../config/environment',  __FILE__)
 require 'feedzirra'
 
-SLEEPTIME = 3600 # 1hr
-
-DEBUG = false
 #cmdline option, 'debug' will log more & will not sleep.
-DEBUG = true if ARGV[0] == "debug"
+DEBUG = (ARGV[0] == "debug") ? true : false
+SLEEPTIME = DEBUG ? 3 : 1800 # 30mins
 
 # You know, I have a feeling I didn't have to write this.
 def log(msg, feeds = nil)
@@ -16,60 +14,79 @@ def log(msg, feeds = nil)
 
 end
 
+# initialize feeds.
+@feeds = {}
+def init
+  @subscriptions = Subscription.all
+  @sub_count = Subscription.size  
+  @last_sub = @subscriptions.last
+  log("Sub count: #{@sub_count}")
+
+  @subscriptions.each do |sub|
+    log sub.url if DEBUG
+
+    begin  
+      if @feeds[sub.url] != nil then
+        if @feeds[sub.url].updated? then
+          update(sub.url, @feeds[sub.ur].new_entries)
+
+        end
+
+      else
+        @feeds[sub.url] = Feedzirra::Feed.fetch_and_parse(sub.feed_url)
+        update(sub.url, @feeds[sub.url].entries)
+
+      end
+
+    rescue Exception => e
+      log e.inspect
+      log e.backtrace
+
+    end
+
+  end
+
+end
+
 def update(url, entries)
-  log("looking at #{url}")
   Subscription.find_by_url(url).add_entries(entries)
 
 end
 
+
 log("### Starting up... ###\n\n")
 
-subscriptions, sub_count, last_sub, feeds = nil, nil, nil, {}
+init()
+# When we initialized our variables, we processed all the new entries.
+# Let's wait a standard period before pinging all of feeds again.
+sleep SLEEPTIME
 
 loop do
+  
+  log("Awake. Checking for updates.")
 
-  # initialize or check to see if list has changed.
-  if sub_count != Subscription.size || last_sub != Subscription.last then
+  # TODO Does not account for cases where a subscription has been removed
+  if @sub_count != Subscription.size || @last_sub != Subscription.last then
+    log("Subs have been added. Fetching new subs.")
+    init() #reinitalizes the instance variables, fetches new updates.
 
-    subscriptions = Subscription.all
-    sub_count = Subscription.size  
-    last_sub = subscriptions.last
+  else
+    count = 0
+    @subscriptions.each { |sub|
+      feed = @feeds[sub.url]
 
-    log("Sub count: #{sub_count}")
-
-    subscriptions.each { |sub|
-      log sub.url if DEBUG
-
-      begin  
-        entries = nil
-        
-        if feeds[sub.url] != nil
-          entries = feeds[sub.ur].new_entries if feeds[sub.url].updated?
-        
-        else
-          feeds[sub.url] = Feedzirra::Feed.fetch_and_parse(sub.feed_url)
-          entries = feeds[sub.url].entries
-        
-        end
-        
-        update(sub.url, entries) unless entries == nil
-
-      rescue Exception => e
-        log e.inspect
-        log e.backtrace
-
+      if feed.updated? then
+        update(sub.url, feed.entries) if feed.updated?
+        count = count + 1
       end
     }
 
-  else
-    subscriptions.each { |sub|
-      feed = feeds[sub.url]
-      update(sub.url, feed.entries) if feed.updated?
-    }
+    log "Feeds with updates: #{count}" unless count == 0
 
   end
 
-  sleep SLEEPTIME unless DEBUG
+  sleep SLEEPTIME 
+
 end
 
 
