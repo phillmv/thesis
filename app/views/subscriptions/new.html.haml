@@ -1,0 +1,11 @@
+%h1 New subscription
+
+- form_for(@subscription) do |f|
+  = f.error_messages
+
+  = text_field :subscription, :feed_url
+
+  %p
+    = f.submit 'Create'
+
+= link_to 'Back', subscriptions_path

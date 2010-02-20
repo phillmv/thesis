@@ -1,21 +1,25 @@
+require 'feedzirra'
 class Subscription < ActiveRecord::Base
+  validates_uniqueness_of :url
+  validates_uniqueness_of :feed_url
+  
   has_many :entries
-=begin
-  # TODO: need to add new subscriptions
-  def self.parse(feed)
-    f = Subscription.find_or_create_by_url(feed.url)
-    f.url = feed.url
-    f.feed_url = feed.feed_url
-    f.last_modified = feed.last_modified
-    f.etag = feed.etag
-    f.title = feed.title
-    f.save!
+  after_create :parse
 
-    feed.entries.each { |e|
-      Entry.parse(e, f)
-    }
+  # TODO really needs to be pushed out into a library/daemon
+  def parse
+    begin
+      feed = Feedzirra::Feed.fetch_and_parse(self.feed_url) 
+    rescue Exception => e
+      puts e.inspect
+      puts e.backtrace
+      return nil
+    end
+    self.url = feed.url
+    self.title = feed.title
+    self.save!
+    self.add_entries(feed.entries)
   end
-=end
 
   def self.size
     self.count_by_sql("select count(id) from subscriptions")
