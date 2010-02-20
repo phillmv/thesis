@@ -22,19 +22,23 @@ def init
   @last_sub = @subscriptions.last
   log("Sub count: #{@sub_count}")
 
+  count = 0
+
   @subscriptions.each do |sub|
     log sub.url if DEBUG
 
     begin  
       if @feeds[sub.url] != nil then
-        if @feeds[sub.url].updated? then
-          update(sub.url, @feeds[sub.ur].new_entries)
-
+        if update!(sub.url) then
+          count = count + 1
+        
         end
 
       else
         @feeds[sub.url] = Feedzirra::Feed.fetch_and_parse(sub.feed_url)
-        update(sub.url, @feeds[sub.url].entries)
+        Subscription.find_by_url(sub.url).
+          add_entries( @feeds[sub.url].entries)     
+        count = count + 1
 
       end
 
@@ -46,11 +50,26 @@ def init
 
   end
 
+  log "Feeds with updates: #{count}"
 end
 
-def update(url, entries)
-  Subscription.find_by_url(url).add_entries(entries)
+def update!(url)
+  begin
+    feed = (@feeds[url] = Feedzirra::Feed.update(@feeds[url]))
 
+    if feed.updated? then
+      log "#{url} has updates." if DEBUG
+      Subscription.find_by_url(url).add_entries(feed.new_entries)
+      return true
+
+    end
+
+  rescue Exception => e
+    log e.inspect
+    log e.backtrace
+  end
+
+  return false
 end
 
 
@@ -63,32 +82,26 @@ sleep SLEEPTIME
 
 loop do
   
-  log("Awake. Checking for updates.")
+  log("Awake.")
 
-  # TODO Does not account for cases where a subscription has been removed
+  # TODO: does not remove deleted items off update list until daemon restart
   if @sub_count != Subscription.size || @last_sub != Subscription.last then
-    log("Subs have been added. Fetching new subs.")
+    log("Feed list has changed. Refetching feeds.")
     init() #reinitalizes the instance variables, fetches new updates.
 
   else
     count = 0
-    @subscriptions.each { |sub|
-      feed = @feeds[sub.url]
+    @subscriptions.each do |sub|
+        if update!(sub.url) then
+          count = count + 1
+        
+        end
 
-      if feed.updated? then
-        update(sub.url, feed.entries) if feed.updated?
-        count = count + 1
-      end
-    }
+    end
 
-    log "Feeds with updates: #{count}" unless count == 0
+    log "Feeds with updates: #{count}"
 
   end
 
   sleep SLEEPTIME 
-
 end
-
-
-
-
