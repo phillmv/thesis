@@ -3,4 +3,4 @@
 require 'rubygems'
 require 'daemons'
 
-Daemons.run("populate.rb", { :app_name => "updatr.rb", :dir_mode => :normal, :dir => File.expand_path('../../../tmp/pids',  __FILE__)})
+Daemons.run(File.dirname(File.expand_path(__FILE__)) + "/populate.rb", { :app_name => "updatr.rb", :dir_mode => :normal, :dir => File.expand_path('../../../tmp/pids',  __FILE__)})
