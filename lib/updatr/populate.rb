@@ -35,9 +35,16 @@ def init
         end
 
       else
-        @feeds[sub.url] = Feedzirra::Feed.fetch_and_parse(sub.feed_url)
+        feed = Feedzirra::Feed.fetch_and_parse(sub.feed_url)
+        if feed == 0 then
+          # change sub count to force reinit on next cycle.
+          @sub_count = @sub_count - 1
+          raise "Feed init for #{sub.url} failed. How's your internet connection?"
+        else
+          @feeds[sub.url] = feed
+        end
         Subscription.find_by_url(sub.url).
-          add_entries( @feeds[sub.url].entries)     
+          add_entries(@feeds[sub.url].entries)     
         count = count + 1
 
       end
@@ -55,7 +62,12 @@ end
 
 def update!(url)
   begin
-    feed = (@feeds[url] = Feedzirra::Feed.update(@feeds[url]))
+    feed = Feedzirra::Feed.update(@feeds[url])
+    if feed == 0 then
+      raise "Feed update failed for #{url}. How's your internet connection?"
+    else
+      @feeds[url] = feed
+    end
 
     if feed.updated? then
       log "#{url} has updates." if DEBUG
