@@ -1,0 +1,23 @@
+<p>
+  <b>Entry:</b>
+  <%=h @classification.entry_id %>
+</p>
+
+<p>
+  <b>Clicked:</b>
+  <%=h @classification.clicked %>
+</p>
+
+<p>
+  <b>Clicked title:</b>
+  <%=h @classification.clicked_title %>
+</p>
+
+<p>
+  <b>Liked:</b>
+  <%=h @classification.liked %>
+</p>
+
+
+<%= link_to 'Edit', edit_classification_path(@classification) %> |
+<%= link_to 'Back', classifications_path %>

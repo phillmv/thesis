@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  entry_id: 1
+  clicked: false
+  clicked_title: false
+  liked: false
+
+two:
+  entry_id: 1
+  clicked: false
+  clicked_title: false
+  liked: false

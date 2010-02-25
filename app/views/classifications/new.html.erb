@@ -1,0 +1,27 @@
+<h1>New classification</h1>
+
+<% form_for(@classification) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :entry_id %><br />
+    <%= f.text_field :entry_id %>
+  </p>
+  <p>
+    <%= f.label :clicked %><br />
+    <%= f.check_box :clicked %>
+  </p>
+  <p>
+    <%= f.label :clicked_title %><br />
+    <%= f.check_box :clicked_title %>
+  </p>
+  <p>
+    <%= f.label :liked %><br />
+    <%= f.check_box :liked %>
+  </p>
+  <p>
+    <%= f.submit 'Create' %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', classifications_path %>
