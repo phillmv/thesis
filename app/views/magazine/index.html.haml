@@ -1,12 +1,7 @@
-.grid_8
-  %h1
-    Hello World,
-
 #content
   - last_date = nil
   - @entries.each do |e|
     .clear
-      foo
     .grid_2
       - if last_date != e.published.yday then
         .date
@@ -21,9 +16,27 @@
         %h2.title
           %a{:href => e.url}="• #{e.title}"
         %h3.origin
-          %a{:href => e.subscription.url}= "#{e.subscription.title}"
-        = e.published
-        .summary
-          = e.summary
+          = link_to e.subscription.title, subscription_path(e.subscription.id)
+        - if e.content.nil?
+          .summary
+            = e.summary
         .content
           = e.content
+
+        - if e.liked?
+          <b>liked</b>
+        - else
+          = "<button id = \"liked#{e.id}\" onclick=\"liked(this);\" class=\"liked\" value=\"#{e.id}\">like</button>"
+
+        - if e.disliked?
+          <b>disliked</b>
+        - else
+          = "<button id = \"#{e.id}\"  onclick=\"disliked(this);\" class=\"disliked\" value=\"#{e.id}\">dislike</button>"
+
+        \::
+        read?
+        - if e.read 
+          = "<input type=\"checkbox\" id=\"check#{e.id}\" value=\"#{e.id}\" checked=\"true\" onclick=\"read(this)\" />"
+        - else
+          = "<input type=\"checkbox\" id=\"check#{e.id}\" value=\"#{e.id}\" onclick=\"read(this)\" />"
+
