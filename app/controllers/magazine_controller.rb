@@ -2,7 +2,7 @@ class MagazineController < ApplicationController
 
   def index
     @entries = Entry.paginate(:page => params[:page],
-                              :per_page => 5,
+                              :per_page => 10,
                               :order => "published DESC",
                               :conditions => { :read => nil })
   end
