@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100221220151) do
+ActiveRecord::Schema.define(:version => 20100304235257) do
 
   create_table "branches", :force => true do |t|
     t.datetime "created_at"
@@ -33,18 +33,8 @@ ActiveRecord::Schema.define(:version => 20100221220151) do
     t.text     "summary"
     t.text     "content"
     t.datetime "published"
-    t.date     "read"
+    t.datetime "read"
     t.integer  "subscription_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "entry_classifications", :force => true do |t|
-    t.integer  "entry_id"
-    t.boolean  "clicked"
-    t.boolean  "clicked_title"
-    t.boolean  "upvoted"
-    t.boolean  "downvoted"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
