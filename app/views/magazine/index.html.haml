@@ -17,11 +17,8 @@
           %a{:href => e.url}="• #{e.title}"
         %h3.origin
           = link_to e.subscription.title, subscription_path(e.subscription.id)
-        - if e.content.nil?
-          .summary
-            = e.summary
         .content
-          = e.content
+          = e.essence
 
         - if e.liked?
           <b>liked</b>
