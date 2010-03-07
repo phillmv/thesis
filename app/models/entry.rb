@@ -36,11 +36,20 @@ class Entry < ActiveRecord::Base
   def classifier_text
     # let's start simple. Ideally should be adding qualifiers like
     # weighing link text more heavily.
+    
+    str = ""
+    str <<  prefix("author", self.author)
+    str <<  prefix("subscription", self.subscription.title)
+    
+    str <<  self.title.split(" ").collect { |w| 
+      word = w.stem
+      if !(CORPUS_SKIP_WORDS.include?(word) && word.length > 2) then
+        prefix("title", word)
+      end
+    }.join(" ")
 
-    prefix("author", self.author) << 
-      prefix("subscription", self.subscription.title) <<
-        prefix("title", self.title) <<
-          Hpricot(self.essence).to_plain_text.strip
+    str <<  Hpricot(self.essence).to_plain_text.strip
+    return str
   end
   
   def essence
@@ -137,5 +146,89 @@ class Entry < ActiveRecord::Base
     h.inner_html
 
   end
+
+  CORPUS_SKIP_WORDS = [
+    "a",
+    "again",
+    "all",
+    "along",
+    "are",
+    "also",
+    "an",
+    "and",
+    "as",
+    "at",
+    "but",
+    "by",
+    "came",
+    "can",
+    "cant",
+    "couldnt",
+    "did",
+    "didn",
+    "didnt",
+    "do",
+    "doesnt",
+    "dont",
+    "ever",
+    "first",
+    "from",
+    "have",
+    "her",
+    "here",
+    "him",
+    "how",
+    "i",
+    "if",
+    "in",
+    "into",
+    "is",
+    "isnt",
+    "it",
+    "itll",
+    "just",
+    "last",
+    "least",
+    "like",
+    "most",
+    "my",
+    "new",
+    "no",
+    "not",
+    "now",
+    "of",
+    "on",
+    "or",
+    "should",
+    "sinc",
+    "so",
+    "some",
+    "th",
+    "than",
+    "this",
+    "that",
+    "the",
+    "their",
+    "then",
+    "those",
+    "to",
+    "told",
+    "too",
+    "true",
+    "try",
+    "until",
+    "url",
+    "us",
+    "were",
+    "when",
+    "whether",
+    "while",
+    "with",
+    "within",
+    "yes",
+    "you",
+    "youll",
+  ]
+
 
 end
