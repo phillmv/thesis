@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require File.expand_path('../../../config/environment',  __FILE__)
-require 'feedzirra'
 require File.dirname(__FILE__) + '/feeds'
 
 # cmdline option, 'debug' will log more & will not sleep.
