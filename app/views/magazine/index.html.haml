@@ -1,4 +1,5 @@
-- @entries.each do |e|
+- @stream.each do |s|
+  - e = s.entry
   .clear
   .grid_2
     %br/
@@ -23,10 +24,12 @@
         = "<button id = \"#{e.id}\"  onclick=\"disliked(this);\" class=\"disliked\" value=\"#{e.id}\">dislike</button>"
 
       \::
+      = "prediction: #{s.category.downcase}"
+      \::
       read?
       - if e.read 
         = "<input type=\"checkbox\" id=\"check#{e.id}\" value=\"#{e.id}\" checked=\"true\" onclick=\"read(this)\" />"
       - else
         = "<input type=\"checkbox\" id=\"check#{e.id}\" value=\"#{e.id}\" onclick=\"read(this)\" />"
-  .grid_1
+      .grid_1
     %br/

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require File.expand_path('../../../config/environment',  __FILE__)
 require File.dirname(__FILE__) + '/feeds'
+require File.dirname(__FILE__) + '/stream'
 
 # cmdline option, 'debug' will log more & will not sleep.
 # This needs to be pushed out to configuration.
@@ -8,6 +9,7 @@ DEBUG = (ARGV[0] == "debug") ? true : false
 SLEEPTIME = DEBUG ? 30.seconds.to_i : 3.minutes.to_i
 
 FEED_SLEEP = 30.minutes
+STREAM_SLEEP = 3.minutes
 
 # You know, I have a feeling I didn't have to write this.
 def log(msg, feeds = nil)
@@ -20,6 +22,7 @@ end
 log("### Starting up... ###\n\n")
 @services = []
 @services << FeedUpdater.new(FEED_SLEEP)
+@services << StreamUpdater.new(STREAM_SLEEP)
 # When we initialized our variables, we processed all the new entries.
 # Let's wait a standard period before pinging all of feeds again.
 

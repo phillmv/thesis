@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100304235257) do
+ActiveRecord::Schema.define(:version => 20100305194200) do
 
   create_table "branches", :force => true do |t|
     t.datetime "created_at"
@@ -39,10 +39,11 @@ ActiveRecord::Schema.define(:version => 20100304235257) do
     t.datetime "updated_at"
   end
 
-  create_table "streams", :force => true do |t|
-    t.integer  "branch_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+  create_table "stream", :force => true do |t|
+    t.integer "entry_id"
+    t.string  "rating"
+    t.integer "size"
+    t.string  "category"
   end
 
   create_table "subscriptions", :force => true do |t|

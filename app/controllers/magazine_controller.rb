@@ -1,17 +1,12 @@
 class MagazineController < ApplicationController
 
   def index
-    @entries = Entry.paginate(:page => params[:page],
-                              :per_page => 10,
-                              :order => "published DESC",
-                              :conditions => { :read => nil })
+    @stream = Stream.paginate_by_sql("select stream.*, entries.published from stream inner join entries on stream.entry_id = entries.id order by published DESC", :per_page => 10, :page => params[:page])
   end
 
   def more
-    @entries = Entry.paginate(:page => params[:page],
-                              :per_page => 10,
-                              :order => "published DESC",
-                              :conditions => { :read => nil })
+    @stream = Stream.paginate_by_sql("select stream.*, entries.published from stream inner join entries on stream.entry_id = entries.id order by published DESC", :per_page => 10, :page => params[:page])
+
 
     render :index, :layout => false
   end
