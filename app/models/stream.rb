@@ -9,8 +9,8 @@ class Stream < ActiveRecord::Base
 
   def self.refresh!
     Stream.transaction do
-      Stream.connection.execute("insert into stream (entry_id) select id from entries where entries.read is null and not exists (select entry_id from stream where entries.id != stream.entry_id);")
       Stream.connection.execute("delete from stream where (select id from entries where entries.id = stream.entry_id and entries.read is not null);")
+      Stream.connection.execute("insert into stream (entry_id) select id from entries where entries.read is null and id not in (select entry_id from stream where entries.id = stream.entry_id);")
     end
   end
 
