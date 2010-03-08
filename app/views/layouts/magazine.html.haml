@@ -4,16 +4,18 @@
       thesis
   = stylesheet_link_tag 'application', '960.css'
   = javascript_include_tag "jquery-1.4.2.min", "jquery.infinitescroll", "application"
-.container_12
+#header.container_12
+  .grid_2
+    %br/
   .grid_8
     %h1
-      Hello World,
+      Hello World.
+
     - form_for :subscription, :url => subscriptions_path do |f|
       = text_field :subscription, :feed_url
       = f.submit 'add sub'
-  .clear
-  .grid_4
+  -#.grid_4
     = will_paginate @entries, :id => true
 
-
+#content.container_12
   = yield

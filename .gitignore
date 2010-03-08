@@ -3,3 +3,4 @@ dump/*
 tmp
 */.DS_Store
 .DS_Store
+public/stylesheets/application.css
