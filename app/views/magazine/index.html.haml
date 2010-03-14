@@ -1,35 +1,30 @@
-- @stream.each do |s|
-  - e = s.entry
-  .clear
-  .grid_2
-    %br/
-  %div{ :id => "entry_#{e.id}", :class => "entry grid_8"}
-    %h2.title
-      %a{:href => e.url}="• #{e.title}"
+#content
+  - @stream.each do |s|
+    - e = s.entry
+    .clear
+    .grid_2
       %br/
-    #byline
-      = "from #{link_to e.subscription.title, subscription_path(e.subscription)}"
-      = "by #{e.author}" unless e.author.nil?
-    .essence
-      = e.essence
-    .controls
-      - if e.liked?
-        <b>liked</b>
-      - else
+    %div{ :id => "entry_#{e.id}", :class => "entry grid_8"}
+      %h2.title
+        %a{:href => e.url}="• #{e.title}"
+        %br/
+      #byline
+        = "from #{link_to e.subscription.title, subscription_path(e.subscription)}"
+        = "by #{e.author}" unless e.author.nil?
+      .essence
+        = e.essence
+      .controls
         = "<button id = \"liked#{e.id}\" onclick=\"liked(this);\" class=\"liked\" value=\"#{e.id}\">like</button>"
 
-      - if e.disliked?
-        <b>disliked</b>
-      - else
         = "<button id = \"#{e.id}\"  onclick=\"disliked(this);\" class=\"disliked\" value=\"#{e.id}\">dislike</button>"
 
-      \::
-      = "prediction: #{s.category.downcase}"
-      \::
-      read?
-      - if e.read 
-        = "<input type=\"checkbox\" id=\"check#{e.id}\" value=\"#{e.id}\" checked=\"true\" onclick=\"read(this)\" />"
-      - else
-        = "<input type=\"checkbox\" id=\"check#{e.id}\" value=\"#{e.id}\" onclick=\"read(this)\" />"
-      .grid_1
-    %br/
+        \::
+        = "prediction: #{s.category}"
+        \::
+        read?
+        - if @current_user.has_read?(e)
+          = "<input type=\"checkbox\" id=\"check#{e.id}\" value=\"#{e.id}\" checked=\"true\" onclick=\"read(this)\" />"
+        - else
+          = "<input type=\"checkbox\" id=\"check#{e.id}\" value=\"#{e.id}\" onclick=\"read(this)\" />"
+        .grid_1
+      %br/

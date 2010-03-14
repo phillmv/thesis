@@ -3,13 +3,14 @@
 
 $(document).ready(function() {
   //  alert("start");
-  
-  $(window).infinitescroll({
-    url: window.location.href + "more",
-    appendTo: '#content'
-  });
-  
-  
+
+  if ($("#content").length != 0) {
+    $(window).infinitescroll({
+      url: window.location.href + "more",
+      appendTo: '#content'
+    });
+  }
+
 });
 
 function liked(elem){
