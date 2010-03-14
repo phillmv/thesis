@@ -10,6 +10,7 @@ class Entry < ActiveRecord::Base
     
   belongs_to :subscription
   has_one :classification
+  has_many :metadata, :class_name => "Metadata"
 
   named_scope :unread, :order => "published ASC", :conditions => { :read => nil }
 

@@ -4,8 +4,10 @@
 # I FIGURE some class name is clobbering something else but it's not obvious
 # what the hell is going on.
 
-Entry.last.classifier_text
+Entry.first.classifier_text
+Stream.create(:entry_id => Entry.first, :user_id => 0)
 Stream.last.category
+Stream.last.destroy
 
 require 'classifier'
 class StreamUpdater
@@ -13,20 +15,28 @@ class StreamUpdater
     @sleep_for = sleep_period
     @last_update = (Time.now - sleep_period) # guarantee update on 1st run
 
-    @classifier = Classifier::Bayes.new "liked", "disliked"
+    @classifiers = {}
+    User.all.each do |u|
+      c = Classifier::Bayes.new "liked", "disliked"
 
-    Classification.liked.each { |e| 
-      @classifier.train_liked e.classifier_text 
-    }
+      u.liked.each { |e| 
+        c.train_liked e.classifier_text 
+      }
 
-    Classification.disliked.each { |e| 
-      @classifier.train_disliked e.classifier_text 
-    }
+      u.disliked.each { |e| 
+        c.train_disliked e.classifier_text 
+      }
+      
+      # why the fuck user.email is not working is something I don't want
+      # to solve right now.
+      @classifiers[u.attributes["email"]] = c
+    end
 
     self.update!
   end
 
-  # TODO: Should re-rank entries when the number of classifications changes.
+  # TODO: Should re-rank entries when the number of classifications or users
+  # changes.
   def update!
     if (@last_update + @sleep_for) <= Time.now then
       puts "StreamUpdater updating. It's currently: #{Time.now}" if DEBUG
@@ -45,13 +55,15 @@ class StreamUpdater
 
   private
   def load_class_predictions
-    entries = Stream.unclassified
-
-    entries.each { |e|
-      Stream.classify_entry(e, @classifier.classify(e.classifier_text))
+    User.all.each do |u|
+      entries = Stream.unclassified(u)
+      
+      entries.each do |e|
+        prediction = @classifiers[u.attributes["email"]].classify(e.classifier_text)
+        Stream.prediction(e, prediction, u)
   
-    }
-
+      end
+    end
   end
 
 end

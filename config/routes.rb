@@ -5,6 +5,11 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'entries/:id/read', :controller => 'magazine', :action => "read", :conditions => { :method => :post }
 
   map.resources :subscriptions
+  map.resource :user_session
+  map.resource :account, :controller => "users"
+
+  map.connect '/login', :controller => 'user_sessions', :action => 'new'
+  map.connect '/logout', :controller => 'user_sessions', :action => 'destroy'
 
   # The priority is based upon order of creation: first created -> highest priority.
 

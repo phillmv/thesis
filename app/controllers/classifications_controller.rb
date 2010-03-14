@@ -1,10 +1,9 @@
 class ClassificationsController < ApplicationController
 
   def liked
-    @entry = Entry.find(params[:id])
-    @entry.read!
-    @entry.liked!
-    
+    entry = Entry.find(params[:id])
+    @current_user.liked!(entry)
+    @current_user.read!(entry)
 
     respond_to do |format|
       format.js { render :json => true }
@@ -12,11 +11,13 @@ class ClassificationsController < ApplicationController
   end
 
   def disliked
-    @entry = Entry.find(params[:id])
-    @entry.read!
-    @entry.disliked!
-
-    redirect_to :back
+    entry = Entry.find(params[:id])    
+    @current_user.disliked!(entry)
+    @current_user.read!(entry)
+    
+    respond_to do |format|
+      format.js { render :json => true }
+    end
   end
 
   #scaffolded, will prolly use later. Not routed to atm.

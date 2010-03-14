@@ -1,5 +1,6 @@
 require 'feedzirra'
 class Subscription < ActiveRecord::Base
+  has_and_belongs_to_many :user
   validates_uniqueness_of :url
   validates_uniqueness_of :feed_url
   

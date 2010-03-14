@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100305194200) do
+ActiveRecord::Schema.define(:version => 20100314090844) do
 
   create_table "branches", :force => true do |t|
     t.datetime "created_at"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(:version => 20100305194200) do
     t.boolean  "liked"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   create_table "entries", :force => true do |t|
@@ -33,8 +34,15 @@ ActiveRecord::Schema.define(:version => 20100305194200) do
     t.text     "summary"
     t.text     "content"
     t.datetime "published"
-    t.datetime "read"
     t.integer  "subscription_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "metadata", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "entry_id"
+    t.boolean  "read"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -44,6 +52,7 @@ ActiveRecord::Schema.define(:version => 20100305194200) do
     t.string  "rating"
     t.integer "size"
     t.string  "category"
+    t.integer "user_id"
   end
 
   create_table "subscriptions", :force => true do |t|
@@ -52,6 +61,20 @@ ActiveRecord::Schema.define(:version => 20100305194200) do
     t.string   "feed_url"
     t.datetime "last_modified"
     t.string   "etag"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "subscriptions_users", :id => false, :force => true do |t|
+    t.integer "user_id"
+    t.integer "subscription_id"
+  end
+
+  create_table "users", :force => true do |t|
+    t.string   "email",             :null => false
+    t.string   "crypted_password",  :null => false
+    t.string   "password_salt",     :null => false
+    t.string   "persistence_token", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
