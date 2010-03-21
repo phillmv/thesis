@@ -14,21 +14,12 @@ $(document).ready(function() {
   enable_transition("/subscriptions/", "#subscriptions", false);
   enable_transition("/classifications/", "#classifications");
   enable_transition("/", "#home");
-//  enable_transition("/subscriptions/", "#subscription", true, true)
   
-
-  
-  //$('#entry_4453').click(function(e) { alert($(this).attr("id")); });
 });
 
 function register_secondary_callbacks()
 {
   enable_transition("/subscriptions/", ".subscription", true, true);
-  //$(".subscription").click(function(e) { 
-  //  e.preventDefault();
-  //  alert("boo"); 
-  //});
-
 }
 
 function enable_transition(kontroller, selector, endless, id)
