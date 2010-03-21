@@ -1,17 +1,7 @@
-.container_12
-  %h1=@subscription.title
-  .grid_7
-    - @subscription.entries.find(:all, :order => "published DESC").each do |e|
+#content
+  .grid_7.prefix_2
+    - if params[:page] == nil
       %h2
-        %a{:href => e.url}="• #{e.title}"
-      - if e.content.nil?
-        .summary
-          = e.summary
-      .content
-        = e.content
-
-      %br/
-      = "<button id = \"#{e.id}\" class=\"liked\">like</button>"
-      = "<button id = \"#{e.id}\" class = \"disliked\">dislike</button>"
-      %hr
-  
+        = @subscription.title
+  - @subscription_entries.each do |e|
+    = render :partial => 'shared/entry', :locals => { :entry => e, :stream => nil }

@@ -1,0 +1,10 @@
+#content
+  .clear
+  .grid7.prefix_2
+    %h2
+      = "You have classified #{Classification.count(:conditions =>"user_id = #{@current_user.id}")} entries." unless params[:page] != nil
+
+  - @classifications.each do |classification|
+    - e = classification.entry
+    = render :partial => 'shared/entry', :locals => { :entry => e, :stream => nil }
+

@@ -41,6 +41,10 @@ class User < ActiveRecord::Base
     Entry.find_by_sql(["select * from entries e where e.id = (select c.entry_id from classifications c where e.id = c.entry_id and c.liked is false and c.user_id = ?)", self.id])
   end
 
+  def subscribe(sub)
+      self.subscriptions << sub
+  end
+
   private
   def classify(attribute, val, entry_id)
     c = Classification.find_or_create_by_entry_id(entry_id)

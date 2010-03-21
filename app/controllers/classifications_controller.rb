@@ -25,12 +25,19 @@ class ClassificationsController < ApplicationController
   # GET /classifications
   # GET /classifications.xml
   def index
-    @classifications = Classification.all
+    @classifications = Classification.paginate_by_sql(["select * from classifications where user_id = ? order by id DESC", @current_user.id], { :per_page => 3, :page => params[:page] })
+
 
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @classifications }
     end
+  end
+
+  def more
+    @classifications = Classification.paginate_by_sql(["select * from classifications where user_id = ? order by id DESC", @current_user.id], { :per_page => 10, :page => params[:page] })
+
+    render :index, :layout => false
   end
 
   # GET /classifications/1

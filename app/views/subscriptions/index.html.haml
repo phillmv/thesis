@@ -1,15 +1,17 @@
-<h1>Listing subscriptions</h1>
+#content.grid_7.prefix_2
+  %h2 Your subscriptions
 
-%table
-  - @subscriptions.each do |subscription|
-    %tr
-      %td
-        = subscription.title
-      %td
-        = link_to 'Show', subscription
-      %td= link_to 'Edit', edit_subscription_path(subscription)
-      %td= link_to 'Destroy', subscription, :confirm => 'Are you sure?', :method => :delete
+  = link_to 'Add a subscription', new_subscription_path  
+  %br/
+  %br/
+  %table
+    - @subscriptions.each do |subscription|
+      %tr
+        %td
+          = subscription.title
+        %td
+          = link_to 'Show', "", :class => "subscription", :id => subscription.id
+        -#%td= link_to 'Edit', edit_subscription_path(subscription)
+        %td= link_to 'Remove', "/subscriptions/remove/#{subscription.id}", :confirm => 'Are you sure?'
 
-<br />
-
-= link_to 'New subscription', new_subscription_path
+  <br />

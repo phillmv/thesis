@@ -1,0 +1,32 @@
+.clear
+%div{ :id => "entry_#{entry.id}", :class => "entry grid_8 prefix_2"}
+  %h2.title
+    = entry.id
+    %a{:href => entry.url}="• #{entry.title}"
+    %br/
+  #byline
+    = "from #{link_to entry.subscription.title, subscription_path(entry.subscription)}"
+    = "by #{entry.author}" unless entry.author.nil?
+  .essence
+    = entry.essence
+  .controls
+    - if entry.liked?
+      <b>signal</b>
+    - else
+      = "<button id = \"liked#{entry.id}\" onclick=\"liked(this);\" class=\"liked\" value=\"#{entry.id}\">signal</button>"
+
+    - if entry.disliked?
+      <b>noise</b>
+    - else
+      = "<button id = \"#{entry.id}\"  onclick=\"disliked(this);\" class=\"disliked\" value=\"#{entry.id}\">noise</button>"
+
+    \::
+    = "prediction: #{stream.category}" unless stream == nil
+    \::
+    read?
+    - if @current_user.has_read?(entry)
+      = "<input type=\"checkbox\" id=\"check#{entry.id}\" value=\"#{entry.id}\" checked=\"true\" onclick=\"read(this)\" />"
+    - else
+      = "<input type=\"checkbox\" id=\"check#{entry.id}\" value=\"#{entry.id}\" onclick=\"read(this)\" />"
+    .grid_1
+  %br/

@@ -4,22 +4,20 @@ class SubscriptionsController < ApplicationController
   def index
     @subscriptions = @current_user.subscriptions
 
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @subscriptions }
-    end
+    render :index, :layout => false
   end
 
   # GET /subscriptions/1
   # GET /subscriptions/1.xml
   def show
     @subscription = Subscription.find(params[:id])
+    @subscription_entries =  Entry.paginate_by_sql(["select * from entries e where exists (select id from subscriptions_users su where su.user_id = ? and e.subscription_id = ?)", @current_user.id, params[:id]], :per_page => 10, :page => params[:page])
+    render :show, :layout => false
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @subscription }
-    end
+  end
+
+  def more
+    show()
   end
 
   # GET /subscriptions/new
@@ -41,17 +39,26 @@ class SubscriptionsController < ApplicationController
   # POST /subscriptions
   # POST /subscriptions.xml
   def create
-    @subscription = Subscription.new(params[:subscription])
+    @subscription = Subscription.find_or_create_by_feed_url(params[:subscription][:feed_url])
+    
+    #@subscription = Subscription.new(params[:subscription])
 
     respond_to do |format|
-      if @subscription.save
-        flash[:notice] = 'Subscription was successfully created.'
+      if @subscription.save && @current_user.subscriptions << @subscription
+        flash[:notice] = 'Subscription was successfully added.'
         format.html { redirect_to(@subscription) }
         format.xml  { render :xml => @subscription, :status => :created, :location => @subscription }
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @subscription.errors, :status => :unprocessable_entity }
       end
+    end
+  end
+
+  def remove
+    if @current_user.subscriptions.delete(Subscription.find(params[:id]))
+      flash[:notice] = "Subscription was removed."
+      redirect_to :back
     end
   end
 
