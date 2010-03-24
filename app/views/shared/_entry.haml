@@ -1,27 +1,28 @@
 .clear
 %div{ :id => "entry_#{entry.id}", :value => entry.id, :class => "entry grid_8 prefix_2"}
   %h2.title
-    = entry.id
-    %a{:href => entry.url}="• #{entry.title}"
+    %a{:href => entry.url}= entry.title
     %br/
   #byline
     = "from #{link_to entry.subscription.title, subscription_path(entry.subscription)}"
     = "by #{entry.author}" unless entry.author.nil?
+    •
+    = entry.published.strftime "%a, %b %d %H:%M"
+    = "• #{stream.category}" unless stream == nil
+
   .essence
     = entry.essence
   .controls
     - if entry.liked?
       <b>signal</b>
     - else
-      = "<button id = \"liked#{entry.id}\" onclick=\"liked(this);\" class=\"liked\" value=\"#{entry.id}\">signal</button>"
+      = "<button id = \"signal#{entry.id}\" class=\"signal\" value=\"#{entry.id}\">signal</button>"
 
     - if entry.disliked?
       <b>noise</b>
     - else
-      = "<button id = \"#{entry.id}\"  onclick=\"disliked(this);\" class=\"disliked\" value=\"#{entry.id}\">noise</button>"
+      = "<button id = \"noise#{entry.id}\" class=\"noise\" value=\"#{entry.id}\">noise</button>"
 
-    \::
-    = "prediction: #{stream.category}" unless stream == nil
     \::
     read?
     - if @current_user.has_read?(entry)

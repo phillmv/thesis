@@ -9,7 +9,7 @@ class MagazineController < ApplicationController
   end
 
   def more
-    @stream = Stream.page(@current_user.id, 3, params[:page])
+    @stream = Stream.page(@current_user.id, 10, params[:page])
   
     render :partial => "shared/entries", :locals => { :stream => @stream }
   end

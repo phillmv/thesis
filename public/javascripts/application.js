@@ -9,14 +9,15 @@ $(document).ready(function() {
 
   $(window).infinitescroll({
       url: function(){ return controller; },
-      appendTo: '#content'
+      appendTo: '#content',
+      triggerAt: 600
   });
 
   $(window).keydown(function(event){
     switch (event.keyCode) {
       case 74: // j
-        load_entries();
         scroll(true);
+        load_entries();        
         break;
 
       case 75: // k
@@ -27,20 +28,22 @@ $(document).ready(function() {
       // this is pretty ugly right now. but it works!
       case 85:
         if (entries[entry_pos] !== undefined) {
-          liked("#liked" + $(entries[entry_pos]).attr("value"));
+          val = $(entries[entry_pos]).attr("value");
+          liked(val, $("#signal" + val));
         }
         break;
 
       case 78:
         if (entries[entry_pos] !== undefined) {
-          disliked("#" + $(entries[entry_pos]).attr("value"));
+          val = $(entries[entry_pos]).attr("value");
+          disliked(val, $("#noise" + val));
         }
         break;
       }
   });
 
 
-    navigation();
+    signal_and_noise();
 
     enable_transition("/subscriptions/", "#subscriptions", false);
     enable_transition("/classifications/", "#classifications");
@@ -48,22 +51,6 @@ $(document).ready(function() {
 
   });
 
-function navigation()
-{
-  
-  $("#next_entry").click(function(_event) {
-    _event.preventDefault();
-
-    load_entries();
-    scroll(true);
-  });
-
-  $("#prev_entry").click(function (_event) {
-    _event.preventDefault();
-
-    scroll(false);
-  });
-}
 
 function scroll(direction) {
   if(entries[entry_pos + direction] != undefined)  
@@ -91,6 +78,7 @@ function load_entries()
 function register_secondary_callbacks()
 {
   enable_transition("/subscriptions/", ".subscription", true, true);
+  signal_and_noise();
 }
 
 function enable_transition(kontroller, selector, endless, id)
@@ -130,15 +118,27 @@ function enable_transition(kontroller, selector, endless, id)
   });
 }
 
-function liked(elem){
-  $.post('/entries/' + $(elem).attr("value") + "/liked", function(data) {
-    $(elem).replaceWith("<b>liked</b>");
+function signal_and_noise()
+{
+  $(".signal").click(function(e) {
+      liked($(this).val(), $(this));
+    });
+
+  $(".noise").click(function(e) {
+      disliked($(this).val(), $(this));
+    });
+
+}
+
+function liked(value, button){
+  $.post('/entries/' + value + "/liked", function(data) {
+    button.replaceWith("<b>liked</b>");
   });
   }
 
-function disliked(elem){
-  $.post('/entries/' + $(elem).attr("value") + "/disliked", function(data) {
-      $(elem).replaceWith("<b>disliked</b>");
+function disliked(value, button){
+  $.post('/entries/' + value + "/disliked", function(data) {
+      button.replaceWith("<b>disliked</b>");
     });
 }
 
