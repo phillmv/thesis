@@ -10,8 +10,8 @@ class MagazineController < ApplicationController
 
   def more
     @stream = Stream.page(@current_user.id, 3, params[:page])
-
-    render :index, :layout => false
+  
+    render :partial => "shared/entries", :locals => { :stream => @stream }
   end
 
   def nothing

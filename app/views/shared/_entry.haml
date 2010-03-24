@@ -1,5 +1,5 @@
 .clear
-%div{ :id => "entry_#{entry.id}", :class => "entry grid_8 prefix_2"}
+%div{ :id => "entry_#{entry.id}", :value => entry.id, :class => "entry grid_8 prefix_2"}
   %h2.title
     = entry.id
     %a{:href => entry.url}="• #{entry.title}"

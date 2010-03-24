@@ -1,0 +1,4 @@
+- stream.each do |s|
+  - e = s.entry
+  = render :partial => 'shared/entry', :locals => { :entry => e, :stream => s }
+  

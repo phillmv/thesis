@@ -1,4 +1,5 @@
 #content
-  - @stream.each do |s|
-    - e = s.entry
-    = render :partial => 'shared/entry', :locals => { :entry => e, :stream => s }
+  <a href="" id="next_entry">next</a>
+  <a href="" id="prev_entry">prev</a>
+
+  = render :partial => 'shared/entries', :locals => { :stream => @stream }
