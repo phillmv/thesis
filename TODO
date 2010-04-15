@@ -1,0 +1,41 @@
+In lieu of a real issue tracker, let's see if this textfile helps me out anymore (the issues bit up top here on github is pretty sweet but I find it's waaaay too easy to ignore it, esp as I frequently find myself working offline).
+
+PRESSING ACADEMIC ISSUES:
+MUST HAVE DATA TO WRITE PAPER ABOUT
+- must include:
+  precision
+  recall
+  n fold testing/validation
+  NEED TO REREAD ALL RELEVANT PAPERS
+
+#########################
+OPEN ARCHITECTURAL ISSUES:
+#########################
+(0) - actually performing filtering. Right now it's just tagging everything, but not performing any removing. The solution to this problem came to me in an epiphany a couple of weeks ago - just remove n% of disliked articles from the stream, store them all in a section where people can review stuff later. 
+  Problems:
+    - must be aware of ongoing classifier bias, i.e. only activate if more than x classifications have been made
+    - I've come around to the notion that some feeds really are '100% signal', i.e. webcomics.
+    - I really, really want to have a newspaper like opening view, but I need better classifier information (see (2)).
+  
+  Having a working beta is due next Friday. This is thus the most pressing issue - having a usable beta.
+  Desired behaviour:
+    - User classifies stuff as they go along. Sweet! Once a certain classifier threshold is passed, we start removing a certain percentage of disliked articles.
+      - the removing should be weighted towards time. If you went on vacation for two weeks, you just want a recap. I.e. FRESH - 10% removal, RECENT - 50% removal, OLD - 100% removal. (Let's target my own behaviour first - 12, 36, >36 hrs are probably good defaults)
+      - the filtering should occur at the Stream level; I'm a huge fan of having the 'front end' be a straightforward queue display. Once the stream refresh has occured, we can start PRUNE. Select stream and metadata segments for the same time period, and see how the percentage of disliked continues to stack up. If percentage is higher, prune exactly however many randomly selected items are necessary to go below threshold. This should prevent the pruning from ocurring between insertions and fucking up the ratios. I foresee the first naive impl of this to be hella slow.
+      - Writing this out made me realize that I'm setting a really high bar for the initial impl. I'm beginning to be a huge fan of 'do the first thing that works then build on it'. So let's start with a PRUNE that targets 50% elimination of stream disliked compared to metadata and then impl time frames.
+
+  - There needs to be some trickery with how I display large clusters of articles. I need to unfuck the front end too, in the process.
+
+---------
+(1) - enabling custom entry fields for my own junk/automated messages across all users. I've been incredibly lazy about tackling this.
+---------
+(2) - The classifier gem is kind of meh. It works! but I've since learned a little bit more about how classifiers are built, and the way this one is achieved leaves a lot to be desired in terms of customization. The idea of being able to adjust the classifier threshold as more training data is inserted sounds great, but the classifier gem seems to behave extra naively.
+
+###################
+ISSUES I'M AWARE OF:
+###################
+- the classifier text tokenizer is semi broken on certain characters. Asymptotically it doesn't seem to hamper the classifier, but you know, GLARING ERROR.
+- lots of database duplication in fields.
+- routes are ungainly, and there's is a lot of responsibility spread across the wrong nouns (read! is issued in the magazine controller, and that kind of action really be present in Metadata instead? easy to end up spaghettifying the app as I keep on having to work on it)
+- jumping between site sections is broken, due to my js trickery.
+- OMG PLEASE START WRITING TESTS
