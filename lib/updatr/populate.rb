@@ -21,8 +21,19 @@ end
 
 log("### Starting up... ###\n\n")
 @services = []
-@services << FeedUpdater.new(FEED_SLEEP)
-@services << StreamUpdater.new(STREAM_SLEEP)
+
+# Services should be able to recover from 'lack of internet'. If
+# the initialization propagates an exception then Something Is Wrong,
+# Quit Really Loudly
+begin
+  @services << FeedUpdater.new(FEED_SLEEP)
+  @services << StreamUpdater.new(STREAM_SLEEP)
+rescue Exception => e
+  log e.inspect
+  log e.backtrace
+  log("Ugh. Exception at init. Quitting.")
+  exit 1
+end
 # When we initialized our variables, we processed all the new entries.
 # Let's wait a standard period before pinging all of feeds again.
 
@@ -34,10 +45,14 @@ loop do
   # need for multiple background processing. I kind of want this to be
   # asynchronous - what if a service hangs? Right now processing takes 
   # about ten seconds, so it's not a big deal.
-  
-  @services.each do |serv|
-    serv.update!
-  
+  begin
+    @services.each do |serv|
+      serv.update!
+
+    end
+  rescue Exception => e
+    log e.inspect
+    log e.backtrace
   end
   
   sleep SLEEPTIME 

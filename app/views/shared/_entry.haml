@@ -1,17 +1,18 @@
 .clear
-%div{ :id => "entry_#{entry.id}", :value => entry.id, :class => "entry grid_8 prefix_2"}
-  %h2.title
-    %a{:href => entry.url}= entry.title
-    %br/
-  #byline
-    = "from #{link_to entry.subscription.title, subscription_path(entry.subscription)}"
-    = "by #{entry.author}" unless entry.author.nil?
-    •
-    = entry.published.strftime "%a, %b %d %H:%M"
-    = "• #{stream.category}" unless stream == nil
+%div{ :id => "entry_#{entry.id}", :value => entry.id, :class => "entry grid_8"}
+  .post
+    %h2.title
+      %a{:href => entry.url}= entry.title
+      %br/
+    #byline
+      = "from #{link_to entry.subscription.title, subscription_path(entry.subscription)}"
+      = "by #{entry.author}" unless entry.author.nil?
+      •
+      = entry.published.strftime "%a, %b %d %H:%M"
+      = "• #{stream.category}" unless stream == nil
 
-  .essence
-    = entry.essence
+    .essence
+      = entry.essence
   .controls
     - if entry.liked?
       <b>signal</b>

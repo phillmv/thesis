@@ -1,7 +1,7 @@
 class MagazineController < ApplicationController
 
   def index
-    @stream = Stream.page(@current_user.id, 3, params[:page])
+    @stream = Stream.page(@current_user.id, 20, params[:page])
     respond_to do |format|
       format.html
       format.js { render "index.haml", layout => false }

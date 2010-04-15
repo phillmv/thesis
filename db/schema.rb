@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100314090844) do
+ActiveRecord::Schema.define(:version => 20100330211749) do
 
   create_table "branches", :force => true do |t|
     t.datetime "created_at"
@@ -39,18 +39,28 @@ ActiveRecord::Schema.define(:version => 20100314090844) do
     t.datetime "updated_at"
   end
 
+  add_index "entries", ["id"], :name => "index_entries_on_id"
+  add_index "entries", ["published"], :name => "index_entries_on_published"
+  add_index "entries", ["subscription_id"], :name => "index_entries_on_subscription_id"
+  add_index "entries", ["url"], :name => "index_entries_on_url"
+
   create_table "metadata", :force => true do |t|
     t.integer  "user_id"
     t.integer  "entry_id"
-    t.boolean  "read"
+    t.datetime "read"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "category"
+    t.float    "signal_value"
+    t.float    "noise_value"
   end
+
+  add_index "metadata", ["entry_id"], :name => "index_metadata_on_entry_id"
+  add_index "metadata", ["user_id"], :name => "index_metadata_on_user_id"
 
   create_table "stream", :force => true do |t|
     t.integer "entry_id"
-    t.string  "rating"
-    t.integer "size"
+    t.float   "rating"
     t.string  "category"
     t.integer "user_id"
   end

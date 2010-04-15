@@ -16,6 +16,7 @@ class StreamUpdater
     @last_update = (Time.now - sleep_period) # guarantee update on 1st run
 
     @classifiers = {}
+    @classifier_update = {}
     User.all.each do |u|
       c = Classifier::Bayes.new "liked", "disliked"
 
@@ -30,6 +31,7 @@ class StreamUpdater
       # why the fuck user.email is not working is something I don't want
       # to solve right now.
       @classifiers[u.attributes["email"]] = c
+      @classifier_update[u.attributes["email"]] = u.classifications.last.id
     end
 
     self.update!
@@ -43,8 +45,9 @@ class StreamUpdater
       
       @last_update = Time.now
       
-      Stream.refresh!
+      Metadata.populate!
       load_class_predictions()
+      Stream.populate!
       log "Stream has been refreshed."
       return true
     else
@@ -56,12 +59,11 @@ class StreamUpdater
   private
   def load_class_predictions
     User.all.each do |u|
-      entries = Stream.unclassified(u)
-      
-      entries.each do |e|
-        prediction = @classifiers[u.attributes["email"]].classify(e.classifier_text)
-        Stream.prediction(e, prediction, u)
-  
+      Metadata.unclassified(u.id).each do |e|
+        text = e.classifier_text
+        prediction = @classifiers[u.attributes["email"]].classify(text)
+        values = @classifiers[u.attributes["email"]].classifications(text)
+        Metadata.prediction(e, prediction, u, values)
       end
     end
   end

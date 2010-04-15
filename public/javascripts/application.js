@@ -7,11 +7,49 @@ var entry_pos = -1;
 
 $(document).ready(function() {
 
-  $(window).infinitescroll({
+ $(window).infinitescroll({
       url: function(){ return controller; },
       appendTo: '#content',
       triggerAt: 600
   });
+
+ /* $('.entry').each(function() {
+     var entry = $(this);
+
+     var biggest = 0;
+
+     if (entry.find("object").length != 0)
+     {
+      entry.addClass("col3");       
+      return; 
+     }
+
+     entry.find('img').each(function() {
+         if( biggest < $(this).width())
+         {
+           biggest = $(this).width();
+         }
+       });
+
+     if(biggest > 460)
+     {
+       entry.addClass("col3");
+       return;
+     }
+
+     if(biggest > 220)
+     {
+       entry.addClass("col2");
+       return;
+     }
+      
+     entry.addClass("col1");
+
+   });*/
+/* $('#content').masonry({
+     columnWidth: 220
+   });*/
+
 
   $(window).keydown(function(event){
     switch (event.keyCode) {
@@ -63,7 +101,10 @@ function scroll(direction) {
       dir = -1;
     }
     
-    entry_pos = entry_pos + dir;   
+    $(entries[entry_pos]).removeClass("selected");
+    entry_pos = entry_pos + dir;
+
+    $(entries[entry_pos]).addClass("selected");
     $.scrollTo(entries[entry_pos], 300);
   }
 }

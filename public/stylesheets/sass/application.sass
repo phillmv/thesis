@@ -3,6 +3,11 @@ body
   font-size: 14px
   overflow-y: scroll
 
+button
+  border: 1px solid black
+  -moz-border-radius: 5px
+  -moz-box-shadow: 1px 1px 1px black
+
 a:link
   color: #0066cc
 
@@ -23,7 +28,19 @@ a:link
   .link
     text-decoration: underline
 
+.selected
+  .post
+    border: 1px solid black
+    -moz-border-radius: 5px
+    -moz-box-shadow: 1px 0px 1px 1px black
+    padding-left: 20px
+    margin-right: 20px
+
+
 .entry
+  margin-bottom: 10px
+  padding-bottom: 10px
+
   #byline
     margin-bottom: 20px
     
@@ -40,11 +57,7 @@ a:link
     a
       text-decoration: none
 
-  .entry
-    //border-bottom: grey solid 1px
-    margin-bottom: 10px
-    padding-bottom: 10px
-
+   
   .origin
     font-size: 12px
     margin-top: -10px
@@ -62,7 +75,12 @@ a:link
     border-bottom: 1px dotted
 
   img
-    padding-bottom: 10px
-    padding-right: 10px
+    margin-bottom: 10px
+    margin-right: 10px
   a img
     border: none
+  .controls
+    border: 1px solid black
+    -moz-border-radius: 5px
+    -moz-box-shadow: 1px 1px 1px 1px black
+

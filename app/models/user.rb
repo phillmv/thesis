@@ -20,8 +20,11 @@ class User < ActiveRecord::Base
   end
 
   def read!(entry)
-    Metadata.create(:entry_id => entry.id, 
-                    :read => true, :user_id => self.id)
+    m = Metadata.find_or_create_by_entry_id(:entry_id => entry.id)
+    m.read = Time.now
+    m.user_id = self.id
+    m.save!
+
     Stream.delete_all(["entry_id = ? and user_id = ?", entry.id, self.id])
   end
 

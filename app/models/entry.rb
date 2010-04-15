@@ -1,4 +1,5 @@
 class Entry < ActiveRecord::Base
+  Hpricot
   # taken from: 
   # http://www.igvita.com/2006/09/07/validating-url-in-ruby-on-rails/
   VALID_URL = /(^$)|(^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?\/.*)?$)/ix
@@ -49,7 +50,11 @@ class Entry < ActiveRecord::Base
       end
     }.join(" ")
 
-    str <<  Hpricot(self.essence).to_plain_text.strip
+    begin
+      str <<  Hpricot(self.essence).to_plain_text.strip
+    rescue Exception => e
+      log self.essence
+    end
     return str
   end
   
