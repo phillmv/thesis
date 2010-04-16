@@ -1,5 +1,5 @@
 .clear
-%div{ :id => "entry_#{entry.id}", :value => entry.id, :class => "entry grid_8"}
+%div{ :id => "entry_#{entry.id}", :value => entry.id, :class => "entry unselected grid_9"}
   .post
     %h2.title
       %a{:href => entry.url}= entry.title
@@ -17,12 +17,14 @@
     - if entry.liked?
       <b>signal</b>
     - else
-      = "<button id = \"signal#{entry.id}\" class=\"signal\" value=\"#{entry.id}\">signal</button>"
+      %button{:id => "signal#{entry.id}", :class => "signal", :value => entry.id }
+        signal
 
     - if entry.disliked?
       <b>noise</b>
     - else
-      = "<button id = \"noise#{entry.id}\" class=\"noise\" value=\"#{entry.id}\">noise</button>"
+      %button{:id => "noise#{entry.id}", :class => "signal", :value => entry.id }
+        noise
 
     \::
     read?

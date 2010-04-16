@@ -101,10 +101,13 @@ function scroll(direction) {
       dir = -1;
     }
     
+    $(entries[entry_pos]).addClass("unselected");
     $(entries[entry_pos]).removeClass("selected");
     entry_pos = entry_pos + dir;
-
+    
+    $(entries[entry_pos]).removeClass("unselected");    
     $(entries[entry_pos]).addClass("selected");
+    
     $.scrollTo(entries[entry_pos], 300);
   }
 }
