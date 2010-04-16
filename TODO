@@ -39,3 +39,5 @@ ISSUES I'M AWARE OF:
 - routes are ungainly, and there's is a lot of responsibility spread across the wrong nouns (read! is issued in the magazine controller, and that kind of action really be present in Metadata instead? easy to end up spaghettifying the app as I keep on having to work on it)
 - jumping between site sections is broken, due to my js trickery.
 - OMG PLEASE START WRITING TESTS
+- Need to swap out the infinite scroll plugin I'm using and use the other one, which has an identical name and is more flexible.
+- MAKE IT LOOK LESS LIKE ASS
