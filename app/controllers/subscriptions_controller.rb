@@ -4,7 +4,7 @@ class SubscriptionsController < ApplicationController
   def index
     @subscriptions = @current_user.subscriptions
 
-    render :index, :layout => false
+    render :index
   end
 
   # GET /subscriptions/1

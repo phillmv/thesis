@@ -7,10 +7,9 @@
     #byline
       = "from #{link_to entry.subscription.title, subscription_path(entry.subscription)}"
       = "by #{entry.author}" unless entry.author.nil?
-      •
-      = entry.published.strftime "%a, %b %d %H:%M"
+      = "• #{entry.published.strftime "%a, %b %d %H:%M"}"
       = "• #{stream.category}" unless stream == nil
-
+     
     .essence
       = entry.essence
   .controls
@@ -25,8 +24,9 @@
     - else
       %button{:id => "noise#{entry.id}", :class => "signal", :value => entry.id }
         noise
+    %a{ :onclick => "window.open('http://delicious.com/save?v=5&noui&jump=close&url='+encodeURIComponent('#{entry.url}'), 'delicious','toolbar=no,width=550,height=550'); return false;", :class => "delicious", :href => "" } <img id="delicious" src="http://static.delicious.com/img/delicious.small.gif" height="10" width="10" alt="Delicious" />bookmark
 
-    \::
+    •
     read?
     - if @current_user.has_read?(entry)
       = "<input type=\"checkbox\" id=\"check#{entry.id}\" value=\"#{entry.id}\" checked=\"true\" onclick=\"read(this)\" />"

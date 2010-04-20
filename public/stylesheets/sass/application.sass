@@ -1,11 +1,12 @@
 !blue = #0066cc
+!purple = #551A8B
 
 body
   font-family: helvetica
   font-size: 14px
   overflow-y: scroll
 
-button
+button, .button
   border: 1px solid black
   -moz-border-radius: 5px
   -moz-box-shadow: 1px 1px 1px black
@@ -13,7 +14,7 @@ button
   background: #eee
 
 a:link
-  color: !blue
+  color= !blue
 
 #header
   margin-top: 30px
@@ -31,30 +32,47 @@ a:link
 
   .link
     text-decoration: underline
+  
+  #logo
+    border: 1px solid black
+    float: left
+    margin-right: 10px
 
+    width: auto
+    padding: 10px
+    -moz-border-radius: 5px
+    -moz-box-shadow: 1px 1px 1px black
+    -webkit-border-radius: 5px
+    -webkit-box-shadow: 1px 1px 1px black
+    -webkit-border-radius: 5px
+
+  #cajoling
+    padding-top: 5px
+  h2
+    font-size: 18px
+    margin: 0
+    margin-top: 5px
+
+  a:visited
+    color= !blue
+    
 .selected
-  border-top= "1px solid" !blue
-  border-bottom= "1px solid" !blue
+  .post
+    border-top= "1px solid" !blue
   .controls
     display: block
-
-.unselected
-  opacity: 0.8
-
-  color: grey
-  a:link
-    color: grey
-  .controls
-    display: none
-  border-bottom: 1px dotted
-  img
-    opacity: 0.3
-    
+    border-bottom= "1px solid" !blue 
+  
 
 .entry
   margin-bottom: 10px
   padding-bottom: 10px
+  padding-top: 10px
+  margin-top: 10px
 
+  .post
+    padding-top: 10px
+    
   .post, .controls
     margin-right: 20px
     padding-right: 10px
@@ -64,7 +82,7 @@ a:link
     margin-bottom: 20px
     
   h2
-    font-size: 24px
+    font-size: 28px
     margin-top: 10px
     margin-bottom: 10px
   
@@ -87,13 +105,79 @@ a:link
   br
     line-height: 10px
 
-  //.controls
-  //  margin-bottom: 20px
-  //  padding-bottom: 10px
-  //  padding-top: 10px
-  //  
+  .controls
+    padding-bottom: 20px
+    span
+      margin-left: 0px
+    a
+      color= !blue
+
+    .delicious
+      img
+        margin-left: 5px
+        margin-bottom: 0px
+        margin-right: 5px
+  
   img
     margin-bottom: 10px
     margin-right: 10px
   a img
     border: none
+
+  .published
+    margin-left: 8px
+
+.unselected
+  opacity: 0.8
+
+  color: grey
+  a:link
+    color: grey
+
+
+.unselected, .previously_selected
+  .controls
+    display: none
+  border-bottom: 1px dotted
+  img
+    opacity: 0.7
+
+
+.previously_selected
+  opacity: 0.6
+
+  color= !purple
+  a:link
+    color= !purple
+  .controls
+    display: none
+  border-bottom: 1px dotted
+  img
+    opacity: 0.7
+
+#new
+  margin-top: 10px
+  border-top: 1px black solid
+  #login_forms
+    border-left: 1px dotted black
+    padding-left: 20px
+    margin: 10px
+
+
+  blockquote
+    font-family: 'Times New Roman'
+    font-size: 22px
+    text-indent: 22px
+
+
+form
+  input
+    background-color: transparent
+    border-color: -moz-use-text-color #CCCCCC
+    border-style: none none dotted
+    border-width: medium medium 0.0714em
+    margin: 0 0.5em
+  font-family: 'Times New Roman'
+  font-size: 16px
+
+

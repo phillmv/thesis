@@ -65,6 +65,6 @@ class Stream < ActiveRecord::Base
   # As I introduce actual filtering, this will probably become more
   # significant.
   
-  STREAM_PAGINATE = "select stream.*, entries.published from stream inner join entries on stream.entry_id = entries.id where stream.user_id = ? order by stream.id DESC"
+  STREAM_PAGINATE = "select stream.*, entries.published from stream inner join entries on stream.entry_id = entries.id where stream.user_id = ? order by stream.id ASC"
 
 end

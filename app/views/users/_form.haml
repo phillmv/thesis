@@ -1,16 +1,25 @@
-= form.label :email
+
+
+= form.label :name, "Sure! Hi, my name is"
+%br
+= form.text_field :name, :size => "20"
+%br
+%br
+= form.label :email, "you can reach me at this email address"
 <br />
-= form.text_field :email 
+= form.text_field :email, :size => "20"
 <br />
 <br />
-= form.label :password, form.object.new_record? ? nil : "Change password" 
+- if form.object.new_record?
+  = form.label :password, "and I'd like to use the following as a password:"
+- else
+  = form.label :password, "and this is what I want my new password to be:"
 <br />
-= form.password_field :password 
+= form.password_field :password, :size => "20"
 <br />
 <br />
-= form.label :password_confirmation 
+= form.label :password_confirmation, "I've retyped my password into here, too:"
 <br />
-= form.password_field :password_confirmation 
-<br />
+= form.password_field :password_confirmation, :size => "20"
 
 

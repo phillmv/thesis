@@ -5,21 +5,32 @@
   = stylesheet_link_tag 'application', '960.css'
   = javascript_include_tag "jquery-1.4.2.min", "jquery.infinitescroll", "jquery.scrollTo-min.js", "jquery.masonry.js", "application"
 #header.container_12
-  .grid_8
-    %h1
-      <a id= "home" href="">Hello World.</a>
+  .grid_9
+    #logo
+      %h1
+        <a id= "home" href="/">read<br/>less</a>
 
     - if !@current_user.nil? then
       -# form_for :subscription, :url => subscriptions_path do |f|
         = text_field :subscription, :feed_url
         = f.submit 'add sub'
-      = "user: #{@current_user.id}"
-      •
-      = link_to "subscriptions", '', :id => "subscriptions"
-      •      
-      = link_to "classifications", '', :id => "classifications"
-      •
-      = link_to "logout", '/logout'
-      
-#burden.container_12
+      #cajoling
+        %h1
+          = "Hello, #{@current_user.name}."
+        %h2
+          = "It's currently #{Time.now.strftime "%H:%M, %A %B %d"}."
+          %br
+          Feel free to edit your
+          <a href="/subscriptions"  id="subscriptions">subscriptions</a>,
+          <a href="/classifications"  id="classifications">classifications</a>, or
+          <a href="/logout">logout</a>.
+
+
+      - else
+        #cajoling
+          %h1{:style => "font-size: 40px"}
+            Do whatever you want. 
+            %br
+            Do it now. Don't fuck around.
+#burden.container_16
   = yield
