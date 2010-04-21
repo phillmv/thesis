@@ -1,27 +1,26 @@
 .clear
-#new
-  #lots_of_words.grid_10
+#frontpage
+  #lots_of_words.grid_7
     .sales_pitch    
       %h1
         Do you love reading stuff on the internet?
-      %blockquote
+      %p
         Of course you do. You are a total slut for the internet.
       %h1
         Are you completely overwhelmed?
-      %blockquote
+      %p
         Obviously! Have you ever even <i>been</i> on the internet?
       %h1
         Looks like you got yourself a problem.
-      %blockquote
-        <p>I might be able to give you a hand, there. Readless works by learning about your reading habits. </p>
-        <p>The more you read and the more you use the app, the more it can begin to predict which posts you are interested in and eliminate those in which you are not.</p>
-        <p>Right now, this all works through some clever javascript and a <a href="http://en.wikipedia.org/wiki/Naive_Bayes_classifier">naive bayesian classifier</a>. You can see all the code up on <a href="http://github.com/phillmv/readless">github</a>.</p>
-        %p
-          Questions? Feature requests? Bug Reports? 
-          %br 
-          Send email to phillmv -at- <a href="http://okayfail.com">okayfail.com</a> or <a href="http://twitter.com/phillmv">@phillmv</a>.
+      %p I might be able to give you a hand, there. Readless works by learning about your reading habits.
+      %p The more you read and the more you use the app, the more it can begin to predict which posts you are interested in and eliminate those in which you are not.
+      %p Right now, this all works through some clever javascript and a <a href="http://en.wikipedia.org/wiki/Naive_Bayes_classifier">naive bayesian classifier</a>. You can see all the code up on <a href="http://github.com/phillmv/readless">github</a>.</p>
+      %p
+        Questions? Feature requests? Bug Reports? 
+        %br
+        Send email to phillmv -at- <a href="http://okayfail.com">okayfail.com</a> or <a href="http://twitter.com/phillmv">@phillmv</a>.
 
-  #login_forms.grid_5
+  #login_forms.grid_7
     #returning 
       %h2 
         Hello! Have we met before?
@@ -30,18 +29,13 @@
         = f.error_messages
         Of course you have!
         %br
-        %br
-        = f.label :email, "I go by this email address"
-        %br
+        = f.label :email, "I go by this email address:"
         = f.text_field :email, :size => "20"
         %br
-        %br
         and
-        = f.label :password, "this is my password"
-        %br
+        = f.label :password, "this is my password:"
         = f.password_field :password, :size => "20"
 
-        <br />
         <br />
         = f.check_box :remember_me, :style => "margin-left: 0px"
 
@@ -51,15 +45,13 @@
         = f.submit "Login", :class => "button", :style => "margin-left: 0px"
 
     #new_user{:style=> "margin-top: 20px; border-top: 1px solid black"}
-      %h2 Oh, we haven't? Well then. Would you like to sign up?
+      %h2 Pleased to meet you! Would you like to sign up?
       - form_for @user, :url => account_path do |f|
+        Sure!
         = f.error_messages
         = render :partial => "users/form", :object => f 
         %br
         %br
-        Sweet! Let's do this.
-        %br
-        %br
-        = f.submit "Signup!", :class => "button", :style => "margin-left: 0px"
+        = f.submit "Sweet! Let's do this.", :class => "button", :style => "margin-left: 0px"
         
 
