@@ -1,17 +1,17 @@
-#content.grid_7.prefix_2
-  %h2 Your subscriptions
+#subs.grid_10
+  #prologue
+    - form_for :subscription, :style => "display: inline", :url => subscriptions_path do |f|
+      = text_field :subscription, :feed_url
+      = f.submit 'Add!'
 
-  = link_to 'Add a subscription', new_subscription_path  
-  %br/
-  %br/
-  %table
+    %h2{:id=>"feeds"}
+      Want to add a new feed? 
+    %br/
+    %h2 
+      ="You are subscribed to the following #{@subscriptions.size} feeds:"
+  #subscriptions
     - @subscriptions.each do |subscription|
-      %tr
-        %td
-          = subscription.title
-        %td
-          = link_to 'Show', "", :class => "subscription", :id => subscription.id
-        -#%td= link_to 'Edit', edit_subscription_path(subscription)
-        %td= link_to 'Remove', "/subscriptions/remove/#{subscription.id}", :confirm => 'Are you sure?'
-
-  <br />
+      .subscription
+        .title
+          = link_to subscription.title, subscription_path(subscription), :class => "subscription", :id => subscription.id
+        = link_to 'remove', "/subscriptions/remove/#{subscription.id}", :confirm => 'Are you sure?', :class => 'remove'

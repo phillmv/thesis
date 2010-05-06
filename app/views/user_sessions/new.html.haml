@@ -1,6 +1,5 @@
-.clear
 #frontpage
-  #lots_of_words.grid_7
+  #lots_of_words.grid_10
     .sales_pitch    
       %h1
         Do you love reading stuff on the internet?
@@ -20,38 +19,40 @@
         %br
         Send email to phillmv -at- <a href="http://okayfail.com">okayfail.com</a> or <a href="http://twitter.com/phillmv">@phillmv</a>.
 
-  #login_forms.grid_7
-    #returning 
-      %h2 
-        Hello! Have we met before?
+-content_for :metainfo do
+  #frontpage
+    #login_forms.grid_6
+      #returning 
+        %h2 
+          Hello! Have we met before?
 
-      - form_for @user_session, :url => user_session_path do |f|
-        = f.error_messages
-        Of course you have!
-        %br
-        = f.label :email, "I go by this email address:"
-        = f.text_field :email, :size => "20"
-        %br
-        and
-        = f.label :password, "this is my password:"
-        = f.password_field :password, :size => "20"
+        - form_for @user_session, :url => user_session_path do |f|
+          = f.error_messages
+          Of course you have!
+          %br
+          = f.label :email, "I go by this email address:"
+          = f.text_field :email, :size => "20"
+          %br
+          and
+          = f.label :password, "this is my password:"
+          = f.password_field :password, :size => "20"
 
-        <br />
-        = f.check_box :remember_me, :style => "margin-left: 0px"
+          <br />
+          = f.check_box :remember_me, :style => "margin-left: 0px"
 
-        = f.label :remember_me , "Please remember me next time!"      
-        %br
-        %br
-        = f.submit "Login", :class => "button", :style => "margin-left: 0px"
+          = f.label :remember_me , "Please remember me next time!"      
+          %br
+          %br
+          = f.submit "Login", :class => "button", :style => "margin-left: 0px"
 
-    #new_user{:style=> "margin-top: 20px; border-top: 1px solid black"}
-      %h2 Pleased to meet you! Would you like to sign up?
-      - form_for @user, :url => account_path do |f|
-        Sure!
-        = f.error_messages
-        = render :partial => "users/form", :object => f 
-        %br
-        %br
-        = f.submit "Sweet! Let's do this.", :class => "button", :style => "margin-left: 0px"
-        
+      #new_user
+        %h2 Pleased to meet you! Would you like to sign up?
+        - form_for @user, :url => account_path do |f|
+          Sure!
+          = f.error_messages
+          = render :partial => "users/form", :object => f 
+          %br
+          %br
+            = f.submit "Sweet! Let's do this.", :class => "button", :style => "margin-left: 0px"
+          
 

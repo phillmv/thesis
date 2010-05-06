@@ -1,5 +1,7 @@
 class Entry < ActiveRecord::Base
+  # must reference class name before being able to use it (wtf?!)
   Hpricot
+
   # taken from: 
   # http://www.igvita.com/2006/09/07/validating-url-in-ruby-on-rails/
   VALID_URL = /(^$)|(^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?\/.*)?$)/ix
@@ -13,7 +15,13 @@ class Entry < ActiveRecord::Base
   has_one :classification
   has_many :metadata, :class_name => "Metadata"
 
-  named_scope :unread, :order => "published ASC", :conditions => { :read => nil }
+  
+  # can't use false or null values, but that is OK.
+  # maybe I'm being presumptuous but I feel like I'm always running into
+  # AR edge cases.
+  def title
+    read_attribute(:title) or "(title unknown)"
+  end
 
   def self.shuffled
     shuffle!(self.all)

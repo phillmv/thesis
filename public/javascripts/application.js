@@ -1,54 +1,26 @@
-/* $('.entry').each(function() {
-     var entry = $(this);
-
-     var biggest = 0;
-
-     if (entry.find("object").length != 0)
-     {
-      entry.addClass("col3");       
-      return; 
-     }
-
-     entry.find('img').each(function() {
-         if( biggest < $(this).width())
-         {
-           biggest = $(this).width();
-         }
-       });
-
-     if(biggest > 460)
-     {
-       entry.addClass("col3");
-       return;
-     }
-
-     if(biggest > 220)
-     {
-       entry.addClass("col2");
-       return;
-     }
-      
-     entry.addClass("col1");
-
-   });*/
-/* $('#content').masonry({
-     columnWidth: 220
-   });*/
-
 function Magazine() {
   var controller = "/more";
   var entries = new Array();
   var entry_pos = -1;
-
+  var scroll_mutex = false;
 
   $(document).ready(function() {
 
-      $(window).infinitescroll({
-          url: function(){ return controller; },
-          appendTo: '#content',
-          triggerAt: 600
-        });
+      $("#content").infinitescroll({
+          navSelector : "#navigation",
+          nextSelector : "#navigation .next_page",
+          itemSelector: "#content .entry"
+        }, function() { scroll_mutex = false; });
 
+      // I'm forcing j/k for navigation 'cos I can't be arsed to implement
+      // greader-style selection-with-scrolling (it's prolly easier than
+      // it looks, but I'm lazy and would rather add more basic features 
+      // first). Ergo, when you scrollTo the last loaded item, it is often
+      // too long and too far from the page boundary to automatically 
+      // trigger the infinite scroll. By tying page loading to j/k scrolling
+      // we should be able to avoid this.
+
+      $(window).unbind('.infscr');
 
       enable_keybindings(); 
       register_callbacks();
@@ -63,7 +35,6 @@ function Magazine() {
         switch (event.keyCode) {
         case 74: // j
           scroll(true);
-          load_entries();        
           break;
 
         case 75: // k
@@ -109,8 +80,16 @@ function Magazine() {
     if(entries[entry_pos + direction] != undefined)  
     {
       if (direction) {
-        //read(entries[entry_pos]);
+        read(entries[entry_pos]);
         dir = 1;
+        if((entries.size() < entry_pos + 5) && !scroll_mutex )
+        {
+          scroll_mutex = true;
+          //alert("size:" + entries.size() + " pos: " + (entry_pos + 3));
+          $(document).trigger('retrieve.infscr');
+          load_entries();          
+        }
+
       }
       else {
         dir = -1;
@@ -135,6 +114,7 @@ function Magazine() {
   function load_entries()
   {
     // INEFFICIENT ZOMG
+    // but from my experience perf hit is negligible.
     entries = $(".entry").map(function() { 
         return "#" + $(this).attr("id")
       }); 
@@ -167,6 +147,13 @@ function Magazine() {
 }
 
 mag = new Magazine();
+
+$(function(){
+    $('#subscriptions').masonry({ 
+        columnWidth: 190
+      });
+  });
+
 
 /*function enable_transition(kontroller, selector, endless, id)
 {

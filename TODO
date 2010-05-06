@@ -39,6 +39,9 @@ ISSUES I'M AWARE OF:
 - routes are ungainly, and there's is a lot of responsibility spread across the wrong nouns (read! is issued in the magazine controller, and that kind of action really be present in Metadata instead? easy to end up spaghettifying the app as I keep on having to work on it)
 - OMG PLEASE START WRITING TESTS
 
-- Add validations to entries. Titles must not be null (insert empty string to step around it? just reject it outright?)
 - use a real logger available from the rest of the application instead of your hacky POS
 - for some reason the pagination is not exhausting all of the stream entries. immensely frustrating.
+
+
+- Problem with duplicate entries stemming from updates - I just realised I need to validate if it's coming from the same subscription... or else you could just take shit over by attacking popular subscriptions. Fuck me websecurity is hard. 
+- if the post title is identical and the published date is within 24 hours AND it's by the same author

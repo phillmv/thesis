@@ -30,8 +30,8 @@ class Stream < ActiveRecord::Base
   # user_id
   # Shit, it turns out that the signal value is meaningless. Hm.
   STREAM_POPULATE = 
-    "INSERT INTO stream(entry_id, category, rating, user_id) 
-     SELECT m.entry_id, m.category, m.signal_value, m.user_id 
+    "INSERT INTO stream(entry_id, category, rating, user_id, published) 
+     SELECT m.entry_id, m.category, m.signal_value, m.user_id, e.published 
      FROM metadata m 
      JOIN entries e ON m.entry_id = e.id 
      WHERE m.user_id = ? 
@@ -65,6 +65,6 @@ class Stream < ActiveRecord::Base
   # As I introduce actual filtering, this will probably become more
   # significant.
   
-  STREAM_PAGINATE = "select stream.*, entries.published from stream inner join entries on stream.entry_id = entries.id where stream.user_id = ? order by stream.id ASC"
+  STREAM_PAGINATE = "select stream.* from stream where stream.user_id = ? order by stream.published ASC"
 
 end

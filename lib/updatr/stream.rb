@@ -31,7 +31,7 @@ class StreamUpdater
       # why the fuck user.email is not working is something I don't want
       # to solve right now.
       @classifiers[u.attributes["email"]] = c
-      @classifier_update[u.attributes["email"]] = u.classifications.last.id
+      #@classifier_update[u.attributes["email"]] = u.classifications.last.id
     end
 
     self.update!

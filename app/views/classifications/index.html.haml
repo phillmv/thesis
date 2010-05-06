@@ -1,9 +1,9 @@
-#content
-  .clear
-  .grid7.prefix_2
+- content_for :metainfo do
+  #metainfo
     %h2
-      = "You have classified #{Classification.count(:conditions =>"user_id = #{@current_user.id}")} entries." unless params[:page] != nil
+      = "You have classified #{Classification.count(:conditions =>"user_id = #{@current_user.id}")} entries of which #{@current_user.signal_count} were deemed worth reading and #{@current_user.noise_count} were considered to be useless." unless params[:page] != nil
 
+#content.grid_10 
   - @classifications.each do |classification|
     - e = classification.entry
     = render :partial => 'shared/entry', :locals => { :entry => e, :stream => nil }

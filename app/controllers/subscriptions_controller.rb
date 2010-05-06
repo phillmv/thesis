@@ -11,8 +11,9 @@ class SubscriptionsController < ApplicationController
   # GET /subscriptions/1.xml
   def show
     @subscription = Subscription.find(params[:id])
-    @subscription_entries =  Entry.paginate_by_sql(["select * from entries e where exists (select id from subscriptions_users su where su.user_id = ? and e.subscription_id = ?)", @current_user.id, params[:id]], :per_page => 10, :page => params[:page])
-    render :show, :layout => false
+    @subscription_entries =  Entry.paginate_by_sql(["select * from entries e where exists (select id from subscriptions_users su where su.user_id = ? and e.subscription_id = ?) order by published ASC", @current_user.id, params[:id]], :per_page => 10, :page => params[:page])
+
+    render :show
 
   end
 

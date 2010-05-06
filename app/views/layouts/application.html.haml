@@ -1,36 +1,39 @@
 %html
   %head 
     %title
-      thesis
+      readless
   = stylesheet_link_tag 'application', '960.css'
-  = javascript_include_tag "jquery-1.4.2.min", "jquery.infinitescroll", "jquery.scrollTo-min.js", "jquery.masonry.js", "application"
-#header.container_12
-  .grid_9
+  = javascript_include_tag "jquery-1.4.2.min", "jquery.infinitescroll.min", "jquery.scrollTo-min.js", "jquery.masonry.js", "application"
+
+#burden.container_16
+  = yield
+  
+  #header.grid_6
     #logo
       %h1
         <a id= "home" href="/">read<br/>less</a>
+    #cajoling
+      %h1
+        All the news that is fit to read.
+    .clear
 
     - if !@current_user.nil? then
-      -# form_for :subscription, :url => subscriptions_path do |f|
-        = text_field :subscription, :feed_url
-        = f.submit 'add sub'
-      #cajoling
-        %h1
-          = "Hello, #{@current_user.name}."
-        %h2
-          = "It's currently #{Time.now.strftime "%H:%M, %A %B %d"}."
-          %br
-          Feel free to edit your
-          <a href="/subscriptions"  id="subscriptions">subscriptions</a>,
-          <a href="/classifications"  id="classifications">classifications</a>, or
-          <a href="/logout">logout</a>.
+      
+      #menu
+        -# Fuck me, I don't know how to do this cleanly in CSS, it always gets overruled.
+        - subscriptions = 'style="color: #551A8B"' if params[:controller] == "subscriptions"
+        - classifications = 'style="color: #551A8B"' if params[:controller] == "classifications"
+        #cajoling
+          -#%h1
+            = "Hello, #{@current_user.name}."
+          %h2
+            = "It's currently #{Time.now.strftime "%H:%M, %A %B %d"}."
+            %br
+            Check out your
+            ="<a href=\"/subscriptions\" #{subscriptions}>subscriptions</a>,"
+            ="<a href=\"/classifications\" #{classifications}>classifications</a>, or you can just"
+            <a href="/logout">logout</a>.
+      .clear
+    = yield :metainfo
 
 
-    - else
-      #cajoling
-        %h1{:style => "font-size: 40px"}
-          Do whatever you want. 
-          %br
-          Do it now. Don't fuck around.
-#burden.container_16
-  = yield

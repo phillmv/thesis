@@ -1,7 +1,7 @@
 = form.label :name, "My name is:"
 = form.text_field :name, :size => "20"
 %br
-= form.label :email, "I often use this email address:"
+= form.label :email, "I use this email address:"
 = form.text_field :email, :size => "20"
 <br />
 - if form.object.new_record?
@@ -10,7 +10,7 @@
   = form.label :password, "and here is my new password:"
 = form.password_field :password, :size => "20"
 <br />
-= form.label :password_confirmation, "which I have retyped into here:"
+= form.label :password_confirmation, "which I retyped into here:"
 = form.password_field :password_confirmation, :size => "20"
 
 

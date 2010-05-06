@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100419225907) do
+ActiveRecord::Schema.define(:version => 20100504184914) do
 
   create_table "branches", :force => true do |t|
     t.datetime "created_at"
@@ -59,10 +59,11 @@ ActiveRecord::Schema.define(:version => 20100419225907) do
   add_index "metadata", ["user_id"], :name => "index_metadata_on_user_id"
 
   create_table "stream", :force => true do |t|
-    t.integer "entry_id"
-    t.float   "rating"
-    t.string  "category"
-    t.integer "user_id"
+    t.integer  "entry_id"
+    t.float    "rating"
+    t.string   "category"
+    t.integer  "user_id"
+    t.datetime "published"
   end
 
   create_table "subscriptions", :force => true do |t|

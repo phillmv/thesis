@@ -28,6 +28,15 @@ class User < ActiveRecord::Base
     Stream.delete_all(["entry_id = ? and user_id = ?", entry.id, self.id])
   end
 
+  def signal_count
+    Classification.count_by_sql("select count(id) from classifications where user_id = #{self.id} and liked is true")
+  end
+
+  def noise_count
+    Classification.count_by_sql("select count(id) from classifications where user_id = #{self.id} and liked is false")
+  end
+
+
   def liked!(entry)
     classify("liked", true, entry.id)
   end

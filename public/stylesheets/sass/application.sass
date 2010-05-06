@@ -16,10 +16,11 @@ button, .button
 a:link
   color= !blue
 
-#header
-  margin-top: 30px
-  padding-bottom: 50px  
+h1
+  font-size: 2em
 
+#header
+  padding-top: 20px
   h1
     float:left
     display: inline
@@ -34,10 +35,10 @@ a:link
     text-decoration: underline
   
   #logo
-    border: 1px solid black
     float: left
     margin-right: 10px
 
+    border: 1px solid black
     width: auto
     padding: 10px
     -moz-border-radius: 5px
@@ -46,15 +47,24 @@ a:link
     -webkit-box-shadow: 1px 1px 1px black
     -webkit-border-radius: 5px
 
-  #cajoling
   h2
     font-size: 18px
     margin: 0
-    margin-top: 5px
 
   a:visited
     color= !blue
-    
+
+
+  #cajoling
+    padding-top: 0.6em
+    h1
+      font-size: 2.2em
+    padding-bottom: 10px
+
+  #metainfo
+    padding-top: 10px
+    border-top: 1px solid black
+
 .selected
   .post
     border-top= "1px solid" !blue
@@ -157,15 +167,10 @@ a:link
 #frontpage
   margin-top: 10px
   #login_forms
-    border-left: 1px solid black
-    padding-left: 20px
-    font-size: 14px
-
-  h1
-    font-size: 18px
-
-  h2
     font-size: 16px
+    margin-left: 0px
+    #new_user
+      margin-top: 20px
 
   p
     font-family: 'Times New Roman'
@@ -173,12 +178,36 @@ a:link
 
 form
   input
-    //background-color: transparent
-    //border-color: -moz-use-text-color #CCCCCC
-    //border-style: none none dotted
-    //border-width: medium medium 0.0714em
     margin-bottom: 0.5em
   font-family: 'Times New Roman'
-  font-size: 16px
 
+#subscriptions
+  a:visited
+    color= !blue
+
+  .subscription
+    width: 180px
+    margin-bottom: 20px
+      
+  .title
+    //padding-right: 20px
+    font-size: 1.2em
+    font-weight: bold
+
+    a
+      text-decoration: none
+    .remove
+      font-size: 0.8em
+
+
+#prologue
+  padding-top: 20px
+
+  #feeds
+    display: inline
+  form
+    display: inline
+
+#subscription
+  margin-left: 20px
 

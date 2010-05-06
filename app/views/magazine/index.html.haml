@@ -1,2 +1,5 @@
-#content
+#content.grid_10
   = render :partial => 'shared/entries', :locals => { :stream => @stream }
+
+#navigation{:style => "display: none"}
+  = will_paginate @stream

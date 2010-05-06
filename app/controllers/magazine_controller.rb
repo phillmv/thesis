@@ -1,6 +1,7 @@
 class MagazineController < ApplicationController
 
   def index
+    
     @stream = Stream.page(@current_user.id, 10, params[:page])
     respond_to do |format|
       format.html

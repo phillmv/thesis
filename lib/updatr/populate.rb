@@ -3,13 +3,15 @@ require File.expand_path('../../../config/environment',  __FILE__)
 require File.dirname(__FILE__) + '/feeds'
 require File.dirname(__FILE__) + '/stream'
 
+puts RAILS_ENV
+
 # cmdline option, 'debug' will log more & will not sleep.
 # This needs to be pushed out to configuration.
 DEBUG = (ARGV[0] == "debug") ? true : false
 SLEEPTIME = DEBUG ? 30.seconds.to_i : 3.minutes.to_i
 
 FEED_SLEEP = 30.minutes
-STREAM_SLEEP = 3.minutes
+STREAM_SLEEP = 15.minutes
 
 # You know, I have a feeling I didn't have to write this.
 def log(msg, feeds = nil)
