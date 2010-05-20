@@ -8,3 +8,6 @@
     - e = classification.entry
     = render :partial => 'shared/entry', :locals => { :entry => e, :stream => nil }
 
+#navigation
+  = will_paginate @classifications
+

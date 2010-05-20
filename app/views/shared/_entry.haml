@@ -8,18 +8,18 @@
       = "from #{link_to entry.subscription.title, subscription_path(entry.subscription)}"
       = "by #{entry.author}" unless entry.author.nil?
       = "• #{entry.published.strftime "%a, %b %d %H:%M"}"
-      = "• #{stream.category}" unless stream == nil
+      = "• #{@current_user.metadata_for(entry).signal}"
      
     .essence
       = entry.essence
   .controls
-    - if entry.liked?
+    - if @current_user.liked?(entry)
       <b>signal</b>
     - else
       %button{:id => "signal#{entry.id}", :class => "signal", :value => entry.id }
         signal
 
-    - if entry.disliked?
+    - if @current_user.disliked?(entry)
       <b>noise</b>
     - else
       %button{:id => "noise#{entry.id}", :class => "signal", :value => entry.id }

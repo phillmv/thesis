@@ -2,6 +2,10 @@ class Metadata < ActiveRecord::Base
   set_table_name "metadata"
   belongs_to :user
 
+  # This constant defines the read value that delineates an item that has
+  # been skipped from the stream, presumably for being 
+  SKIPPED = "1987-06-17 05:30:00".to_datetime
+
   def self.populate!
     Metadata.transaction do
       User.all.each do |u|
@@ -14,11 +18,16 @@ class Metadata < ActiveRecord::Base
     Entry.find_by_sql([METADATA_UNCLASSIFIED, user_id])
   end
 
-  def self.prediction(entry, classification, user, values)
+  def self.prediction(entry, classification, user)
     Metadata.transaction do
-      signalv = "%0.2f" % values["Liked"]
-      noisev = "%0.2f" % values["Disliked"]
-      Metadata.connection.execute str_rpl(METADATA_UPDATE, [classification, signalv, noisev, entry.id, user.id])
+      if classification == "Liked"
+        signal = 'true'
+      else
+        signal = 'false'
+      end
+      #signalv = "%0.2f" % values["Liked"]
+      #noisev = "%0.2f" % values["Disliked"]
+      Metadata.connection.execute str_rpl(METADATA_UPDATE, [signal, entry.id, user.id])
     end
 =begin
     m = Metadata.find_by_entry_id(entry.id, :conditions => "user_id = #{user.id}")
@@ -45,7 +54,7 @@ class Metadata < ActiveRecord::Base
     "SELECT * FROM entries e 
      WHERE e.id IN (SELECT entry_id 
         FROM metadata m 
-        WHERE m.category IS NULL 
+        WHERE m.signal IS NULL 
         AND m.read IS NULL 
         AND m.user_id = ?)"
 
@@ -55,7 +64,7 @@ class Metadata < ActiveRecord::Base
   
   METADATA_UPDATE = 
     "UPDATE metadata m
-     SET id = m.id, category = '?', signal_value = ?, noise_value = ?
+     SET id = m.id, signal = ? 
      WHERE m.entry_id = ?
      AND m.user_id = ?"
     

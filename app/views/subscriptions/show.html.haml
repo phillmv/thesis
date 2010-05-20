@@ -1,15 +1,21 @@
-#subscription.grid_10
-  %h1
-    %a{:href => @subscription.url}
-      = @subscription.title
-
-  Feed url:
-  = @subscription.feed_url
-
-
-#content
+#content.grid_10
   - @subscription_entries.each do |e|
     = render :partial => 'shared/entry', :locals => { :entry => e, :stream => nil }
-.clear
+
 #navigation
   = will_paginate @subscription_entries
+
+- content_for :metainfo do
+  #metainfo
+    %h1
+      %a{:href => @subscription.url}
+        = @subscription.title
+
+    %br/
+    %br/
+    Feed url:
+    %br/
+    %b
+      = @subscription.feed_url
+
+  
