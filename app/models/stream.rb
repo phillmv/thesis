@@ -87,7 +87,7 @@ class Stream < ActiveRecord::Base
     "INSERT INTO stream(entry_id, user_id, published)
      SELECT m.entry_id, m.user_id, e.published
      FROM metadata m
-     JOIN ENTRIES e ON m.entry_id = e.id
+     JOIN entries e ON m.entry_id = e.id
      WHERE m.user_id = ?
      AND m.id = ?"
 
