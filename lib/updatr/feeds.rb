@@ -55,6 +55,7 @@ class FeedUpdater
   def load_feeds!(url)
     begin
       feed = Feedzirra::Feed.update(@feeds[url])
+      log "Feed class: #{@feeds[url].class}, url: #{url}" #debug
       if feed.class == Fixnum then
         raise "Feed update failed for #{url} with value #{feed}. How's your internet connection?"
       else

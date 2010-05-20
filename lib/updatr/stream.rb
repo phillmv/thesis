@@ -6,7 +6,7 @@
 
 Entry.first.classifier_text
 Stream.create(:entry_id => Entry.first, :user_id => 0)
-Stream.last.category
+Stream.last
 Stream.last.destroy
 
 require 'classifier'
@@ -62,8 +62,8 @@ class StreamUpdater
       Metadata.unclassified(u.id).each do |e|
         text = e.classifier_text
         prediction = @classifiers[u.attributes["email"]].classify(text)
-        values = @classifiers[u.attributes["email"]].classifications(text)
-        Metadata.prediction(e, prediction, u, values)
+        #values = @classifiers[u.attributes["email"]].classifications(text)
+        Metadata.prediction(e, prediction, u)
       end
     end
   end

@@ -2,11 +2,16 @@ class User < ActiveRecord::Base
   has_many :metadata, :class_name => "Metadata"
   has_many :classifications
   has_and_belongs_to_many :subscriptions
+
   # Dunno what is up, but I'd like to get basic func in.
   acts_as_authentic do |c|
     c.login_field(:email)
     c.email_field(:email)
     c.validate_email_field(false)
+  end
+
+  def unprocessed
+    Metadata.find_by_sql([METADATA_UNPROCESSED, self.id, self.id])
   end
 
   def has_read?(entry)
@@ -35,6 +40,20 @@ class User < ActiveRecord::Base
   def noise_count
     Classification.count_by_sql("select count(id) from classifications where user_id = #{self.id} and liked is false")
   end
+  
+  def liked?(entry)
+    an_opinion = self.classification_for(entry)
+    return false if an_opinion.nil?
+
+    return an_opinion["liked"]
+  end
+
+  def disliked?(entry)
+    an_opinion = self.classification_for(entry)
+    return false if an_opinion.nil?
+    
+    return !an_opinion["liked"]
+  end
 
 
   def liked!(entry)
@@ -54,7 +73,17 @@ class User < ActiveRecord::Base
   end
 
   def subscribe(sub)
-      self.subscriptions << sub
+    self.subscriptions << sub
+  end
+
+  def classification_for(entry)
+    Classification.find_by_user_id(self.id,
+                                   :conditions => { :entry_id => entry.id })
+  end
+
+  def metadata_for(entry)
+    Metadata.find_by_user_id(self.id, 
+                             :conditions => { :entry_id => entry.id })
   end
 
   private
@@ -64,5 +93,15 @@ class User < ActiveRecord::Base
     c[attribute] = val
     c.save!
   end
+
+  METADATA_UNPROCESSED = 
+    "SELECT * FROM metadata m
+     WHERE m.user_id = ?
+     AND m.read IS NULL 
+     AND m.signal IS FALSE
+     AND m.entry_id NOT IN 
+          (SELECT s.entry_id
+           FROM stream s
+           WHERE s.user_id = ?)"
 
 end
