@@ -38,8 +38,21 @@ rescue Exception => e
 end
 # When we initialized our variables, we processed all the new entries.
 # Let's wait a standard period before pinging all of feeds again.
+#
+#   
+# all of this was completely fucking pointless. There is some ridiculously
+# massive memory leak that completely brought down my server; the online
+# consensus seems to be "oh lol yeah don't write daemons in ruby" and 
+# memory profilining seems to be an arcane art no one performs.
+# SO... better to have this in a cron script for now until I can figure
+# it out... Sigh.
+#
+# On the other hand I don't have to worry about dealing with the changing 
+# numer of classifications and some other minor bugs...
 
-sleep SLEEPTIME
+# sleep SLEEPTIME
+log "Done. Exiting."
+exit 0
 
 loop do
   
