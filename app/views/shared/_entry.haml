@@ -8,7 +8,9 @@
       = "from #{link_to entry.subscription.title, subscription_path(entry.subscription)}"
       = "by #{entry.author}" unless entry.author.nil?
       = "• #{entry.published.strftime "%a, %b %d %H:%M"}"
-      = "• #{@current_user.metadata_for(entry).signal}"
+      - metadata = @current_user.metadata_for(entry)
+      - if !metadata.nil?
+        = "• #{@current_user.metadata_for(entry).signal}"
      
     .essence
       = entry.essence

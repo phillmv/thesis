@@ -75,7 +75,7 @@ class User < ActiveRecord::Base
   end
 
   def subscribe(sub)
-    self.subscriptions << sub
+    User.connection.execute "INSERT INTO subscriptions_users(user_id, subscription_id, created_at) VALUES (#{self.id}, #{sub.id}, NOW());"
   end
 
   def classification_for(entry)
