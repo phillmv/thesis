@@ -5,7 +5,8 @@ class Stream < ActiveRecord::Base
   belongs_to :user
 
   def self.page(user_id, page_amt, page_no)
-    Stream.paginate_by_sql([STREAM_PAGINATE, user_id], {:per_page => page_amt, :page => page_no})
+    Stream.paginate :per_page => page_amt, :page => page_no, :order => 'published ASC', :conditions => ['user_id = ?', user_id], :include => :entry
+    #Stream.paginate_by_sql([STREAM_PAGINATE, user_id], {:per_page => page_amt, :page => page_no})
   end
 
 
@@ -46,7 +47,7 @@ class Stream < ActiveRecord::Base
       Stream.transaction do
         Stream.connection.execute(str_rpl(STREAM_POPULATE, u.id))
 
-        u.unprocessed.each do |metadata|
+        u.noisy_unread.each do |metadata|
           # what a constant mindfuck. Just calling .signal will yield
           # a ArgumentError: wrong number of arguments (1 for 0)
           # and a stack call that immediately goes into method missing.
@@ -59,6 +60,10 @@ class Stream < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def self.populate_user(user)
+    Stream.connection.execute str_rpl(STREAM_POPULATE_NO_SIGNAL, user.id)
   end
 
   private
@@ -82,6 +87,24 @@ class Stream < ActiveRecord::Base
      AND e.id NOT IN (SELECT s.entry_id 
             FROM stream s 
             WHERE s.user_id = m.user_id)"
+
+  STREAM_POPULATE_NO_SIGNAL =
+    "INSERT INTO stream(entry_id, user_id, published) 
+     SELECT m.entry_id, m.user_id, e.published 
+     FROM metadata m 
+     JOIN entries e ON m.entry_id = e.id 
+     WHERE m.user_id = ? 
+     AND m.read IS NULL
+     AND m.signal IS NULL
+     AND e.id NOT IN (SELECT s.entry_id 
+            FROM stream s 
+            WHERE s.user_id = m.user_id)"
+
+  # don't forgot to uh change the style of thingy
+  # fuck me thats so much work
+  # and make the modifier a user 
+  # create a 'mundane' third label in the classifier comprised of the set
+  # of articles that the modifier throws back but never get upvoted? hmm
 
   STREAM_INSERT = 
     "INSERT INTO stream(entry_id, user_id, published)

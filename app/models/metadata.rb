@@ -7,11 +7,10 @@ class Metadata < ActiveRecord::Base
   SKIPPED = "1987-06-17 05:30:00".to_datetime
 
   def self.populate!
-    Metadata.transaction do
-      User.all.each do |u|
-        Metadata.connection.execute str_rpl(METADATA_POPULATE, [u.id, u.id, 7.days.ago])
-      end
+    User.find_each do |u|
+      Metadata.connection.execute str_rpl(METADATA_POPULATE, [u.id, u.id, 7.days.ago])
     end
+    return true
   end
 
   def self.unclassified(user_id)
@@ -25,30 +24,43 @@ class Metadata < ActiveRecord::Base
       else
         signal = 'false'
       end
-      #signalv = "%0.2f" % values["Liked"]
-      #noisev = "%0.2f" % values["Disliked"]
       Metadata.connection.execute str_rpl(METADATA_UPDATE, [signal, entry.id, user.id])
     end
-=begin
-    m = Metadata.find_by_entry_id(entry.id, :conditions => "user_id = #{user.id}")
-    # I really need to find out why I can't access #category directly.
-    m.attributes['category'] = classification.downcase
-    m.attributes['signal_value'] = values["Liked"]
-    m.attributes['noise_value'] = values["Disliked"]
-    m.save!
-=end
-  end
+end
 
   private 
+
+  
+  # So. This function will slurp up all the entries that don't have
+  # metadata entries from all of the subscriptions a user is subscribed to
+  # if the entry pub date is at least 7 days older than the subscription
+  # date.
+  #
+  # MySQL date functions, bitches!
+  #
+  # Why seven days? Because if a user is subscribing to a subscription the
+  # system already knows about, they can end up with an unbounded number of
+  # pre existing entries in their stream from whenever the system began 
+  # following the feed. That would be lame. Ideally it would just pick off
+  # the last x entries but (sigh) at the moment I think it's slightly
+  # more bother than it's worth. If you want to read the past, use
+  # the site's archive, I say. Right now it's just one neat SQL statement.
+  #
+  # TODO edge case: what if a user starts going through one of the
+  # subscription index views and whats to classify an entry that lacks
+  # a metadata? The like method needs to find or create some metadata.
+  # 
+  # Not a big deal, but untackled out of laziness at the moment (fuck).
+  
   METADATA_POPULATE = 
-    "INSERT INTO metadata(entry_id, user_id) 
-     SELECT e.id, su.user_id 
+    "INSERT INTO metadata(entry_id, user_id, created_at) 
+     SELECT e.id, su.user_id, NOW() 
      FROM entries e
      JOIN subscriptions_users su ON su.user_id = ? AND e.subscription_id = su.subscription_id
      WHERE e.id NOT IN (SELECT entry_id 
             FROM metadata m 
-            WHERE m.user_id = ?) 
-     AND e.published > '?'"
+            WHERE m.user_id = ?)
+    AND e.published > SUBDATE(su.created_at, 7)"
 
   METADATA_UNCLASSIFIED = 
     "SELECT * FROM entries e 

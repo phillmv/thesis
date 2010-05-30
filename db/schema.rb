@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100516003145) do
+ActiveRecord::Schema.define(:version => 20100529223010) do
 
   create_table "branches", :force => true do |t|
     t.datetime "created_at"
@@ -76,8 +76,9 @@ ActiveRecord::Schema.define(:version => 20100516003145) do
   end
 
   create_table "subscriptions_users", :id => false, :force => true do |t|
-    t.integer "user_id"
-    t.integer "subscription_id"
+    t.integer  "user_id"
+    t.integer  "subscription_id"
+    t.datetime "created_at"
   end
 
   create_table "users", :force => true do |t|

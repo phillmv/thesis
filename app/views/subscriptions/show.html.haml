@@ -1,6 +1,6 @@
 #content.grid_10
   - @subscription_entries.each do |e|
-    = render :partial => 'shared/entry', :locals => { :entry => e, :stream => nil }
+    = render :partial => 'shared/entry', :locals => { :entry => e, :hide_controls => true }
 
 #navigation
   = will_paginate @subscription_entries

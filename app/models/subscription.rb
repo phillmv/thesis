@@ -1,32 +1,58 @@
 require 'feedzirra'
 class Subscription < ActiveRecord::Base
   has_and_belongs_to_many :user
+  has_many :entries
+ 
   validates_uniqueness_of :url
   validates_uniqueness_of :feed_url
+  validate :feed_url_integrity
+  validate :feed_integrity
   
-  has_many :entries
-  after_create :parse
+  after_validation_on_create :parse
+  after_create :add_entries
+  
 
-  # TODO really needs to be pushed out into a library/daemon
   def parse
-    begin
-      feed = Feedzirra::Feed.fetch_and_parse(self.feed_url) 
-    rescue Exception => e
-      puts e.inspect
-      puts e.backtrace
-      return nil
-    end
-    self.url = feed.url
-    self.title = feed.title
-    self.save!
-    self.add_entries(feed.entries)
+    return false unless errors.empty?
+    self.url = @feed.url
+    self.title = @feed.title
   end
 
   def self.size
     self.count_by_sql("select count(id) from subscriptions")
   end
 
-  def add_entries(entries)
-    Entry.parse(entries, self)
+  private
+  def add_entries
+    debugger
+    Entry.parse(@feed.entries, self) unless @feed.nil?
   end
+
+  def feed_url_integrity
+     if !(Entry::VALID_URL === self.feed_url) then
+       errors.add(:feed_url, "is invalid! Please try again.")
+       return false
+     else
+       return true
+     end
+  end
+
+  def feed_integrity
+    if errors[:feed_url] then
+      # no point in trying.
+      return false
+    
+    else
+      @feed = Feedzirra::Feed.fetch_and_parse(self.feed_url) 
+
+      if @feed.nil? || @feed.class == Fixnum then
+        errors.add(:feed, "seems to not be a valid RSS/Atom/Whatever file. Please try again!")
+        return false
+
+      else
+        return true
+      end
+    end
+  end
+
 end

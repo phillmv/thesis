@@ -41,11 +41,15 @@ class SubscriptionsController < ApplicationController
   # POST /subscriptions.xml
   def create
     @subscription = Subscription.find_or_create_by_feed_url(params[:subscription][:feed_url])
-    
-    #@subscription = Subscription.new(params[:subscription])
+   
+    @current_user.subscriptions << @subscription
 
+    Metadata.populate!
+    Stream.populate_user(@current_user)
+    
     respond_to do |format|
-      if @subscription.save && @current_user.subscriptions << @subscription
+      if @subscription.valid?
+    
         flash[:notice] = 'Subscription was successfully added.'
         format.html { redirect_to(@subscription) }
         format.xml  { render :xml => @subscription, :status => :created, :location => @subscription }

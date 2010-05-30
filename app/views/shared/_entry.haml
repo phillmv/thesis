@@ -12,25 +12,30 @@
      
     .essence
       = entry.essence
-  .controls
-    - if @current_user.liked?(entry)
-      <b>signal</b>
-    - else
-      %button{:id => "signal#{entry.id}", :class => "signal", :value => entry.id }
-        signal
+  - if !(defined? hide_controls)
+    .controls
+      - if @current_user.liked?(entry)
+        <b>signal</b>
+      - else
+        %button{:id => "signal#{entry.id}", :class => "signal", :value => entry.id }
+          signal
 
-    - if @current_user.disliked?(entry)
-      <b>noise</b>
-    - else
-      %button{:id => "noise#{entry.id}", :class => "signal", :value => entry.id }
-        noise
-    %a{ :onclick => "window.open('http://delicious.com/save?v=5&noui&jump=close&url='+encodeURIComponent('#{entry.url}'), 'delicious','toolbar=no,width=550,height=550'); return false;", :class => "delicious", :href => "" } <img id="delicious" src="http://static.delicious.com/img/delicious.small.gif" height="10" width="10" alt="Delicious" />bookmark
+      - if @current_user.disliked?(entry)
+        <b>noise</b>
+      - else
+        %button{:id => "noise#{entry.id}", :class => "signal", :value => entry.id }
+          noise
+      %a{ :onclick => "window.open('http://delicious.com/save?v=5&noui&jump=close&url='+encodeURIComponent('#{entry.url}'), 'delicious','toolbar=no,width=550,height=550'); return false;", :class => "delicious", :href => "" } <img id="delicious" src="http://static.delicious.com/img/delicious.small.gif" height="10" width="10" alt="Delicious" />bookmark
 
-    •
-    read?
-    - if @current_user.has_read?(entry)
-      = "<input type=\"checkbox\" id=\"check#{entry.id}\" value=\"#{entry.id}\" checked=\"true\" onclick=\"read(this)\" />"
-    - else
-      = "<input type=\"checkbox\" id=\"check#{entry.id}\" value=\"#{entry.id}\" onclick=\"read(this)\" />"
-    .grid_1
-  %br/
+      •
+      read?
+      - if @current_user.has_read?(entry)
+        = "<input type=\"checkbox\" id=\"check#{entry.id}\" value=\"#{entry.id}\" checked=\"true\" onclick=\"read(this)\" />"
+      - else
+        = "<input type=\"checkbox\" id=\"check#{entry.id}\" value=\"#{entry.id}\" onclick=\"read(this)\" />"
+      .grid_1
+    %br/ 
+    
+  - else
+    .controls
+    %br/

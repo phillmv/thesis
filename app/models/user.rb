@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
   has_many :classifications
   has_and_belongs_to_many :subscriptions
 
+  before_create :set_modifier
+
   # Dunno what is up, but I'd like to get basic func in.
   acts_as_authentic do |c|
     c.login_field(:email)
@@ -10,7 +12,7 @@ class User < ActiveRecord::Base
     c.validate_email_field(false)
   end
 
-  def unprocessed
+  def noisy_unread
     Metadata.find_by_sql([METADATA_UNPROCESSED, self.id, self.id])
   end
 
@@ -87,6 +89,11 @@ class User < ActiveRecord::Base
   end
 
   private
+
+  # temporary until this gets replaced with a more intelligent mechanism
+  def set_modifier
+    self.modifier = '1'
+  end
   def classify(attribute, val, entry_id)
     c = Classification.find_or_create_by_entry_id(entry_id)
     c.user = self
@@ -94,7 +101,8 @@ class User < ActiveRecord::Base
     c.save!
   end
 
-  METADATA_UNPROCESSED = 
+  private
+  METADATA_NOISY_UNREAD = 
     "SELECT * FROM metadata m
      WHERE m.user_id = ?
      AND m.read IS NULL 
