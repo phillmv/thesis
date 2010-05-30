@@ -45,3 +45,5 @@ ISSUES I'M AWARE OF:
 
 - Problem with duplicate entries stemming from updates - I just realised I need to validate if it's coming from the same subscription... or else you could just take shit over by attacking popular subscriptions. Fuck me websecurity is hard. 
 - if the post title is identical and the published date is within 24 hours AND it's by the same author
+
+- need to validate everything resembling a url in the system.
