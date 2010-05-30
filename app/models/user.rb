@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   end
 
   def noisy_unread
-    Metadata.find_by_sql([METADATA_UNPROCESSED, self.id, self.id])
+    Metadata.find_by_sql([METADATA_NOISY_UNREAD, self.id, self.id])
   end
 
   def has_read?(entry)

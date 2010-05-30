@@ -22,8 +22,8 @@ class Subscription < ActiveRecord::Base
     self.count_by_sql("select count(id) from subscriptions")
   end
 
-  def add_entries
-    Entry.parse(@feed.entries, self) unless @feed.nil?
+  def add_entries(feed = @feed)
+    Entry.parse(feed.entries, self) unless feed.nil?
   end
 
   private
