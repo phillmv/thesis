@@ -22,10 +22,11 @@ class Subscription < ActiveRecord::Base
     self.count_by_sql("select count(id) from subscriptions")
   end
 
-  private
   def add_entries
     Entry.parse(@feed.entries, self) unless @feed.nil?
   end
+
+  private
 
   def feed_url_integrity
      if !(Entry::VALID_URL === self.feed_url) then
