@@ -6,7 +6,6 @@ class Stream < ActiveRecord::Base
 
   def self.page(user_id, page_amt, page_no)
     Stream.paginate :per_page => page_amt, :page => page_no, :order => 'published ASC', :conditions => ['user_id = ?', user_id], :include => :entry
-    #Stream.paginate_by_sql([STREAM_PAGINATE, user_id], {:per_page => page_amt, :page => page_no})
   end
 
 
@@ -127,10 +126,5 @@ class Stream < ActiveRecord::Base
             FROM entries e
             WHERE e.published < ?)"
 
-  STREAM_PAGINATE = 
-    "SELECT stream.* 
-     FROM stream 
-     WHERE stream.user_id = ? 
-     ORDER BY stream.published ASC"
 
 end
