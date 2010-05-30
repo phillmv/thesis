@@ -24,7 +24,6 @@ class Subscription < ActiveRecord::Base
 
   private
   def add_entries
-    debugger
     Entry.parse(@feed.entries, self) unless @feed.nil?
   end
 
