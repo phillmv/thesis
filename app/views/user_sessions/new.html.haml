@@ -46,8 +46,15 @@
           = f.submit "Login", :class => "button", :style => "margin-left: 0px"
 
       #new_user
-        %h2 Pleased to meet you! Would you like to sign up?
-        - form_for @user, :url => account_path do |f|
+        %h2 
+          Pleased to meet you!
+          %br/
+          %br/
+          Unfortunately, we'll be in "private beta" mode for the foreseeable future. 
+          %br/
+          %br/
+          If you send me an email I might fix you up, though.
+        -# form_for @user, :url => account_path do |f|
           Sure!
           = f.error_messages
           = render :partial => "users/form", :object => f 
