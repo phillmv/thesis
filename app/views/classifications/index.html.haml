@@ -4,6 +4,11 @@
       = "You have classified #{Classification.count(:conditions =>"user_id = #{@current_user.id}")} entries of which #{@current_user.signal_count} were deemed worth reading and #{@current_user.noise_count} were considered to be useless." unless params[:page] != nil
 
 #content.grid_10 
+  - if @classifications.empty?
+    %h2 
+      Oops, there doesn't seem to be anything here. 
+      %br/
+      Go read classify some articles!
   - @classifications.each do |classification|
     - e = classification.entry
     = render :partial => 'shared/entry', :locals => { :entry => e, :stream => nil }

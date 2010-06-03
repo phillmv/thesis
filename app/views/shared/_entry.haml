@@ -10,7 +10,7 @@
       = "• #{entry.published.strftime "%a, %b %d %H:%M"}"
       - metadata = @current_user.metadata_for(entry)
       - if !metadata.nil?
-        = "• #{@current_user.metadata_for(entry).signal}"
+        = "• #{@current_user.metadata_for(entry).signal_text}"
      
     .essence
       = entry.essence

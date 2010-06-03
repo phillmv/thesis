@@ -1,0 +1,116 @@
+.clear
+%div{ :id => "first", :class => "entry unselected" }
+  .post
+    %h2.title Hello there!
+    .essence
+      You are reading this because you are currently not subscribed to any feeds and that is just <i>terrible</i>.
+      %br/
+      %br/
+      That also means that this is probably your first time. You are either my advisor (hi, Hossein!) or you are someone I know personally and cajoled into signing up (I'm sorry and I love you, whoever you are). 
+      %br/
+      %br/
+      It's OK, it's scary and confusing for everyone and it is precisely those emotions that this plucky text is meant to alleviate.
+      %br/
+      %br/
+      So: this app is hella rough around the edges. Here are some key things you should know:
+      %ol
+        %li
+          You <b>must</b> to use the j and k keys to navigate up and down respectively.
+          %br/
+          %br/
+          Go on, try it now. Press j.
+
+%div{ :id => "second", :class => "entry unselected" }
+  .post
+    .title.essence{:style => "height: 1000px"}
+      %ol{:style => "list-style-type: none;"}
+        %li
+          Try it again.
+
+%div{ :id => "third", :class => "entry unselected" }
+  .post
+    .essence.title{:style => "height: 1000px"}
+      %ol{:style => "list-style-type: none;"}
+        %li
+          Keep on scrollin' in the free world.
+
+
+%div{ :id => "fourth", :class => "entry unselected" }
+  .post
+    .essence.title{:style => "height: 1000px"}
+      %ol{:style => "list-style-type: none;"}
+        %li
+          Okay, now try pressing k just for shits and giggles.
+
+%div{ :id => "fifth", :class => "entry unselected" }
+  .post
+    .essence.title
+      %ol{:style => "list-style-type: none;"}
+        %li
+          Isn't that great?
+          %br/
+          %br/
+          Okay, so the real reason you're <b>forced</b> to do this is because infinite scroll is easy but scrolling while detecting which div is viewable on screen is slightly more difficult. I will tackle this eventually, but feel free to <a href="http://github.com/phillmv/thesis">submit a pull request</a> in the meanwhile.
+          %br/
+          %br/
+          Press j one last time.
+
+%div{ :id => "sixth", :class => "entry unselected" }
+  .post
+    .essence.title
+      %ol
+        %li{ :value => 2 }
+          Now that I've got you scrolling properly you should know about how this app works.
+          %br/
+          %br/
+          Readless seeks to filter your rss feeds by learning which feed entries you like and dislike. It accomplishes this by looking at the word frequencies of articles you've tagged as 'signal' or as 'noise'. Here is a sample entry:
+          %br/
+          %br/
+          %br/
+          %img{:src => "images/readless-howto.png"}
+          %br/
+          %br/
+
+          It's important to keep in mind that this means the app is 'leaky'. It's meant to filter an overwhelming stream of feeds down to a zeitgeist of sorts. Missing out on some percentage of articles is thus <i>the whole point of this application</i>. It's for the same reason that you will never see any indicators of how much stuff there is left to read.
+          %br/
+          %br/
+          In other words, do not use it to subscribe to feeds where it's absolutely critical you read every single item. You'll be able to see them by clicking on the individual subscription but it won't necessarily show up in your stream. 
+          %br/
+          %br/
+          This also means Readless is likely to perform poorly against image-only or image-intense feeds like <a href="http://ffffound.com/">ffffound</a> or <a href="http://www.boston.com/bigpicture/">The Big Picture</a>.
+
+        %li{:style => "margin-top: 50px;"}
+          Finally, there are a few quirks due to lack of time. 
+          %br/
+          %br/
+          The app is at the mercy of the rss providers. Every now and then you will see duplicate posts or misformmated gunk. Google does some fancy heuristic shit to detect duplicates; I am not google.
+          %br/
+          %br/
+          The archive views are kind of useless (sorry). There is no way to keep an entry unread; bookmark it (also sorry).
+          %br/
+          %br/
+          If you see anything that is broken, or have suggestions, drop me a line: <a href="mailto:phillmv@okayfail.com">phillmv@okayfail.com</a>
+      %br/
+      %br/
+      I'm sorry about the crippling wall of text, but I felt like I had to get a couple of things across. Click around, you are (hopefully) unlikely to break anything. To add new subscriptions and never see this message again, <a href="/subscriptions">click here</a>.
+        
+
+
+
+
+
+
+
+%br/
+%br/
+%br/
+%br/
+%br/
+%br/
+%br/
+%br/
+%br/
+%br/
+%br/
+%br/
+%br/

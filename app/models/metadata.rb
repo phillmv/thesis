@@ -26,7 +26,17 @@ class Metadata < ActiveRecord::Base
       end
       Metadata.connection.execute str_rpl(METADATA_UPDATE, [signal, entry.id, user.id])
     end
-end
+  end
+
+  def signal_text
+    if self.signal 
+      "signaly"
+    elsif self.signal.nil?
+      "unrated"
+    else
+      "noisy"
+    end
+  end
 
   private 
 
