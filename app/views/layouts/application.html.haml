@@ -27,7 +27,7 @@
           -#%h1
             = "Hello, #{@current_user.name}."
           %h2
-            = "It's currently #{Time.now.strftime "%H:%M, %A %B %d"}."
+            = "It's currently #{Time.zone.now.strftime "%H:%M, %A %B %d"}."
             %br
             Check out your
             ="<a href=\"/subscriptions\" #{subscriptions}>subscriptions</a>,"
