@@ -25,7 +25,7 @@
       - if @current_user.disliked?(entry)
         <b>noise</b>
       - else
-        %button{:id => "noise#{entry.id}", :class => "signal", :value => entry.id }
+        %button{:id => "noise#{entry.id}", :class => "noise", :value => entry.id }
           noise
       %a{ :onclick => "window.open('http://delicious.com/save?v=5&noui&jump=close&url='+encodeURIComponent('#{entry.url}'), 'delicious','toolbar=no,width=550,height=550'); return false;", :class => "delicious", :href => "" } <img id="delicious" src="http://static.delicious.com/img/delicious.small.gif" height="10" width="10" alt="Delicious" />bookmark
 
