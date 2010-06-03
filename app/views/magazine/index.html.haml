@@ -1,9 +1,13 @@
 - if @current_user.subscriptions.size == 0 then
   #content.grid_10
     = render :partial => "new_user"
+- elsif @stream.empty? then
+  #content.grid_10
+    = render :partial => "empty"
 - else
   #content.grid_10
     = render :partial => 'shared/entries', :locals => { :stream => @stream }
+    = render :partial => 'empty' if @stream.size < 10 || @stream.empty?
 
   #navigation
     = will_paginate @stream
