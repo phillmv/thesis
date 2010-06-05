@@ -50,8 +50,8 @@ class SubscriptionsController < ApplicationController
     respond_to do |format|
       if @subscription.valid?
     
-        flash[:notice] = 'Subscription was successfully added.'
-        format.html { redirect_to(@subscription) }
+        flash[:notice] = 'Your subscription was successfully added!'
+        format.html { redirect_to(:action => "index", :controller => "magazine") }
         format.xml  { render :xml => @subscription, :status => :created, :location => @subscription }
       else
         format.html { render :action => "new" }
