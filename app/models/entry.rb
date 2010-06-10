@@ -1,6 +1,7 @@
 class Entry < ActiveRecord::Base
   # must reference class name before being able to use it (wtf?!)
   Hpricot
+  require 'digest/md5'
 
   # taken from: 
   # http://www.igvita.com/2006/09/07/validating-url-in-ruby-on-rails/
@@ -27,11 +28,31 @@ class Entry < ActiveRecord::Base
     shuffle!(self.all)
   end
 
+  def self.generate_unique_id(sub_url, entry_url)
+    @@digest ||= Digest::MD5
+    @@digest.hexdigest(sub_url + entry_url)
+  end
+
   def self.parse(entries, subscription)
     entries.each { |entry|
-      e = Entry.find_or_create_by_url(entry.url)
+
+      entry_url = entry.url
+      # obviously a copy from below, that should be refactored.
+      if !(VALID_URL === entry_url) then
+        new_url = (subscription.url + entry_url)
+
+        # Well, if this doesn't fix it... let's keep the original
+        if VALID_URL === new_url then
+          entry_url = new_url
+        end
+      end
+
+      unique_hash = Entry.generate_unique_id(subscription.url, entry.url)
+
+      e = Entry.find_or_create_by_unique_id(unique_hash)
       e.title = entry.title
       e.subscription = subscription
+      e.url = entry_url
       
       e.content = massage_html(e, entry.content) unless entry.content == nil
       e.summary = massage_html(e, entry.summary) unless entry.summary == nil

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100529223010) do
+ActiveRecord::Schema.define(:version => 20100610195138) do
 
   create_table "branches", :force => true do |t|
     t.datetime "created_at"
@@ -37,11 +37,13 @@ ActiveRecord::Schema.define(:version => 20100529223010) do
     t.integer  "subscription_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "unique_id"
   end
 
   add_index "entries", ["id"], :name => "index_entries_on_id"
   add_index "entries", ["published"], :name => "index_entries_on_published"
   add_index "entries", ["subscription_id"], :name => "index_entries_on_subscription_id"
+  add_index "entries", ["unique_id"], :name => "index_entries_on_unique_id"
   add_index "entries", ["url"], :name => "index_entries_on_url"
 
   create_table "metadata", :force => true do |t|
