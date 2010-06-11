@@ -88,6 +88,10 @@ class User < ActiveRecord::Base
                              :conditions => { :entry_id => entry.id })
   end
 
+  def stream
+    Stream.find_all_by_user_id(self.id)
+  end
+
   private
 
   # temporary until this gets replaced with a more intelligent mechanism
