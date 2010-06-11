@@ -50,11 +50,11 @@
           Pleased to meet you!
           %br/
           %br/
-          Unfortunately, we'll be in "private beta" mode for the foreseeable future. 
-          %br/
-          %br/
-          If you send me an email I might fix you up, though.
-        -# form_for @user, :url => account_path do |f|
+          -#Unfortunately, we'll be in "private beta" mode for the foreseeable future. 
+            %br/
+            %br/
+            If you send me an email I might fix you up, though.
+        - form_for @user, :url => account_path do |f|
           Sure!
           = f.error_messages
           = render :partial => "users/form", :object => f 
