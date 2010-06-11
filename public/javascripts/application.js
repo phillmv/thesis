@@ -118,6 +118,7 @@ function Magazine() {
     entries = $(".entry").map(function() { 
         return "#" + $(this).attr("id")
       }); 
+    register_callbacks();
   }
 
   function liked(value, button)
