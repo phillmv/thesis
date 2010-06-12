@@ -57,7 +57,12 @@ class Entry < ActiveRecord::Base
       e.content = massage_html(e, entry.content) unless entry.content == nil
       e.summary = massage_html(e, entry.summary) unless entry.summary == nil
 
-      e.published = entry.published
+      # haaaaaaack
+      if entry.published.nil?
+        e.published = Time.now
+      else
+        e.published = entry.published
+      end
       e.author = entry.author
 
       e.save!

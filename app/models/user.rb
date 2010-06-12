@@ -32,7 +32,6 @@ class User < ActiveRecord::Base
     m.user_id = self.id
     m.save!
 
-    Stream.delete_all(["entry_id = ? and user_id = ?", entry.id, self.id])
   end
 
   def signal_count
@@ -75,7 +74,11 @@ class User < ActiveRecord::Base
   end
 
   def subscribe(sub)
-    User.connection.execute "INSERT INTO subscriptions_users(user_id, subscription_id, created_at) VALUES (#{self.id}, #{sub.id}, NOW());"
+    begin
+      self.subscriptions.find(sub.id)
+    rescue Exception => e
+      User.connection.execute "INSERT INTO subscriptions_users(user_id, subscription_id, created_at) VALUES (#{self.id}, #{sub.id}, NOW());"
+    end
   end
 
   def classification_for(entry)

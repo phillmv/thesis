@@ -8,6 +8,9 @@ class Stream < ActiveRecord::Base
     Stream.paginate :per_page => page_amt, :page => page_no, :order => 'published ASC', :conditions => ['user_id = ?', user_id], :include => :entry
   end
 
+  def self.prune(user)
+    Stream.connection.execute str_rpl(STREAM_PRUNE, user.id)
+  end
 
   # OK. SO. Like everything in life, there is a certain error rate in 
   # bayesian networks. It will also change as we train it with more 
@@ -120,11 +123,11 @@ class Stream < ActiveRecord::Base
 
 
   STREAM_PRUNE = 
-    "DELETE FROM stream s
-     WHERE s.user_id = ? 
-     AND s.entry_id in (SELECT e.id 
-            FROM entries e
-            WHERE e.published < ?)"
-
+    "DELETE FROM stream 
+     WHERE stream.entry_id IN
+      (SELECT m.entry_id 
+       FROM metadata m 
+       WHERE m.read IS NOT NULL) 
+     AND stream.user_id = ?"
 
 end
