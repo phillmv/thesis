@@ -1,6 +1,7 @@
 #frontpage
   #lots_of_words.grid_10
-    .sales_pitch    
+    .sales_pitch   
+      - flash[:notice] #consume useless flash messages
       %h1
         Do you love reading stuff on the internet?
       %p
@@ -48,15 +49,14 @@
       #new_user
         %h2 
           Pleased to meet you!
-          %br/
-          %br/
           -#Unfortunately, we'll be in "private beta" mode for the foreseeable future. 
             %br/
             %br/
             If you send me an email I might fix you up, though.
         - form_for @user, :url => account_path do |f|
-          Sure!
           = f.error_messages
+          Why hello!
+          %br/
           = render :partial => "users/form", :object => f 
           %br
           %br
