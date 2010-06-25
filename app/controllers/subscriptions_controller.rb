@@ -61,9 +61,11 @@ class SubscriptionsController < ApplicationController
   end
 
   def remove
-    if @current_user.subscriptions.delete(Subscription.find(params[:id]))
-      flash[:notice] = "Subscription was removed."
-      redirect_to :back
+    sub = Subscription.find(params[:id])
+    if @current_user.subscriptions.delete(sub)
+      Stream.remove_unsubscribed(@current_user, sub)
+      flash[:notice] = "#{sub.title} was removed."
+      redirect_to :action => "index", :controller => "magazine"
     end
   end
 

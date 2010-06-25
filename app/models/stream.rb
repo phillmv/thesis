@@ -12,6 +12,10 @@ class Stream < ActiveRecord::Base
     Stream.connection.execute str_rpl(STREAM_PRUNE, user.id)
   end
 
+  def self.remove_unsubscribed(user, sub)
+    Stream.connection.execute str_rpl(STREAM_UNSUB, user.id, sub.id)
+  end
+
   # OK. SO. Like everything in life, there is a certain error rate in 
   # bayesian networks. It will also change as we train it with more 
   # items.
@@ -121,6 +125,7 @@ class Stream < ActiveRecord::Base
      SET m.read = '?'
      WHERE m.id = ?"
 
+  # zomg delete read items from ze stream
 
   STREAM_PRUNE = 
     "DELETE FROM stream 
@@ -129,5 +134,13 @@ class Stream < ActiveRecord::Base
        FROM metadata m 
        WHERE m.read IS NOT NULL) 
      AND stream.user_id = ?"
+
+  STREAM_UNSUB =
+    "DELETE FROM stream
+     WHERE stream.user_id = ?
+     AND stream.entry_id IN
+      (SELECT id
+       FROM entries e
+       WHERE e.subscription_id = ?)"
 
 end
