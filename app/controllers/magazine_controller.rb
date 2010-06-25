@@ -5,14 +5,14 @@ class MagazineController < ApplicationController
     @stream = Stream.page(@current_user.id, 10, params[:page])
     respond_to do |format|
       format.html
-      format.js { render "index.haml", layout => false }
     end
   end
 
   def more
     @stream = Stream.page(@current_user.id, 10, params[:page])
-  
-    render :partial => "shared/entries", :locals => { :stream => @stream }
+    respond_to do |format|
+      format.html { render "index", :layout => false }
+    end
   end
 
   def nothing
