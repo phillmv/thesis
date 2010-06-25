@@ -27,9 +27,8 @@ class User < ActiveRecord::Base
   end
 
   def read!(entry)
-    m = Metadata.find_or_create_by_entry_id(:entry_id => entry.id)
+    m = Metadata.find_or_create_by_entry_id_and_entry_id(self.id, entry.id)
     m.read = Time.now
-    m.user_id = self.id
     m.save!
 
   end
