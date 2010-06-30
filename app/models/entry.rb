@@ -39,15 +39,10 @@ class Entry < ActiveRecord::Base
       entry_url = entry.url
       # obviously a copy from below, that should be refactored.
       if !(VALID_URL === entry_url) then
-        new_url = (subscription.url + entry_url)
-
-        # Well, if this doesn't fix it... let's keep the original
-        if VALID_URL === new_url then
-          entry_url = new_url
-        end
+        entry_url = URI::join(subscription.url, entry_url).to_s
       end
 
-      unique_hash = Entry.generate_unique_id(subscription.url, entry.url)
+      unique_hash = Entry.generate_unique_id(subscription.url, entry_url)
 
       e = Entry.find_or_create_by_unique_id(unique_hash)
       e.title = entry.title
@@ -135,12 +130,9 @@ class Entry < ActiveRecord::Base
     # leading forward slash (/)
     h.search("img").each do |elem| 
       if !(VALID_URL === elem.attributes['src']) then
-        new_src = (entry.subscription.url + elem.attributes['src'])
+        new_src = URI::join(entry.subscription.url, elem.attributes['src']).to_s
 
-        # Let's be sure I don't fuck this up.
-        if VALID_URL === new_src then
-          elem.attributes['src'] = new_src
-        end
+        elem.attributes['src'] = new_src
       end
     end
     
