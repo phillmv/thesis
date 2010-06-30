@@ -129,11 +129,12 @@ class Stream < ActiveRecord::Base
 
   STREAM_PRUNE = 
     "DELETE FROM stream 
-     WHERE stream.entry_id IN
+     WHERE stream.user_id = ?
+     AND stream.entry_id IN
       (SELECT m.entry_id 
        FROM metadata m 
-       WHERE m.read IS NOT NULL) 
-     AND stream.user_id = ?"
+       WHERE m.read IS NOT NULL
+       AND m.user_id = stream.user_id)"
 
   STREAM_UNSUB =
     "DELETE FROM stream
