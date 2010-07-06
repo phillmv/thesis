@@ -15,6 +15,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :user_session
   map.resource :account, :controller => "users"
   map.resources :classifications
+  map.skipped '/skipped', :controller => 'skipped', :action => 'index'
 
   map.connect '/login', :controller => 'user_sessions', :action => 'new'
   map.connect '/logout', :controller => 'user_sessions', :action => 'destroy'

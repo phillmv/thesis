@@ -1,0 +1,11 @@
+#content.grid_10 
+  - if @entries.empty?
+    %h2 
+      Oops, there doesn't seem to be anything here. 
+      %br/
+  - @entries.each do |e|
+    = render :partial => 'shared/entry', :locals => { :entry => e, :stream => nil }
+
+#navigation
+  = will_paginate @entries
+

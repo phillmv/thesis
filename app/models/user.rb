@@ -72,6 +72,10 @@ class User < ActiveRecord::Base
     Entry.find_by_sql(["select * from entries e where e.id = (select c.entry_id from classifications c where e.id = c.entry_id and c.liked is false and c.user_id = ?)", self.id])
   end
 
+  def skipped
+    Entry.find_by_sql(["select * from entries e where e.id in (select m.entry_id from metadata m where m.user_id = ? and m.read = ?) order by e.published", self.id, Metadata::SKIPPED])
+  end
+
   def subscribe(sub)
     begin
       self.subscriptions.find(sub.id)
