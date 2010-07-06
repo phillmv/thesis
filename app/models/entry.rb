@@ -2,6 +2,7 @@ class Entry < ActiveRecord::Base
   # must reference class name before being able to use it (wtf?!)
   Hpricot
   require 'digest/md5'
+  require 'nokogiri'
 
   # taken from: 
   # http://www.igvita.com/2006/09/07/validating-url-in-ruby-on-rails/
@@ -69,22 +70,18 @@ class Entry < ActiveRecord::Base
     # weighing link text more heavily.
     
     str = ""
-    str <<  prefix("author", self.author)
-    str <<  prefix("subscription", self.subscription.title)
+    str <<  self.prefix("author", self.author)
+    str <<  self.prefix("subscription", self.subscription.title)
     
     str <<  self.title.split(" ").collect { |w| 
       word = w.stem
-      if !(CORPUS_SKIP_WORDS.include?(word) && word.length > 2) then
+      if !(CORPUS_SKIP_WORDS.include?(word) || word.length < 2) then
         prefix("title", word)
       end
     }.join(" ")
 
-    begin
-      str <<  Hpricot(self.essence).to_plain_text.strip
-    rescue Exception => e
-      log self.essence
-    end
-    return str
+      str << without_punctuation(Nokogiri::HTML(self.essence).text.gsub(/\s/, " ")).strip
+      #Hpricot(self.essence).to_plain_text.strip
   end
   
   def essence
@@ -95,7 +92,6 @@ class Entry < ActiveRecord::Base
     end
   end
 
-  private
   def self.shuffle!(arr) 
     arr.each_index do |i| 
       j = rand(arr.length-i) + i
@@ -139,6 +135,11 @@ class Entry < ActiveRecord::Base
     h.inner_html
 
   end
+
+  def without_punctuation(str)
+    str.tr( ',?.!;:"@#$%^&*()_=+[]{}\|<>/`~', " " ) .tr( "'\-", "")
+  end
+
 
   CORPUS_SKIP_WORDS = [
     "a",

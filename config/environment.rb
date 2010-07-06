@@ -24,6 +24,7 @@ Rails::Initializer.run do |config|
   # config.gem "aws-s3", :lib => "aws/s3"
   config.gem "will_paginate"
   config.gem "hpricot"
+  config.gem "nokogiri"
   config.gem "stemmer"
   config.gem "authlogic"
   config.gem "newrelic_rpm"
