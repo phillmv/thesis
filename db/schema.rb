@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100610195138) do
+ActiveRecord::Schema.define(:version => 20100702155255) do
 
   create_table "branches", :force => true do |t|
     t.datetime "created_at"
@@ -25,6 +25,9 @@ ActiveRecord::Schema.define(:version => 20100610195138) do
     t.datetime "updated_at"
     t.integer  "user_id"
   end
+
+  add_index "classifications", ["entry_id"], :name => "index_classifications_on_entry_id"
+  add_index "classifications", ["user_id"], :name => "index_classifications_on_user_id"
 
   create_table "entries", :force => true do |t|
     t.string   "title"
