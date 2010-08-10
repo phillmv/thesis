@@ -70,18 +70,27 @@ class Entry < ActiveRecord::Base
     # weighing link text more heavily.
     
     str = ""
-    str <<  self.prefix("author", self.author)
-    str <<  self.prefix("subscription", self.subscription.title)
+
+    # author names are far less unique than what is ideal
+    str << self.prefix("author", "#{self.author} #{prefix("", self.subscription.title)}") + " "
     
-    str <<  self.title.split(" ").collect { |w| 
-      word = w.stem
-      if !(CORPUS_SKIP_WORDS.include?(word) || word.length < 2) then
-        prefix("title", word)
-      end
+    #str <<  self.prefix("author", self.author)
+    str << self.prefix("subscription", self.subscription.title)
+   
+    title_array = self.title.split(" ")
+
+    str << bigram(title_array).collect { |w|
+      word = without_punctuation(w)
+      " #{prefix("title", word) } " if include_word?(word)
     }.join(" ")
 
-      str << without_punctuation(Nokogiri::HTML(self.essence).text.gsub(/\s/, " ")).strip
-      #Hpricot(self.essence).to_plain_text.strip
+    without_punctuation(Nokogiri::HTML("#{self.title} #{self.essence}").text.gsub(/\s/, " ")).split(" ").each { |word|
+        if include_word?(word)
+          str << " #{word} "
+        end
+      }
+
+      return str
   end
   
   def essence
@@ -104,7 +113,7 @@ class Entry < ActiveRecord::Base
   # space at the end for serial concatenation.
   def prefix(field = nil, text = nil)
     return " " if text.nil?
-    "#{field}#{IFS}#{text.gsub(/ /,'')} "
+    "#{field}#{IFS}#{text.gsub(/ /,'')}"
   end
 
   def self.massage_html(entry, text)
@@ -137,7 +146,25 @@ class Entry < ActiveRecord::Base
   end
 
   def without_punctuation(str)
-    str.tr( ',?.!;:"@#$%^&*()_=+[]{}\|<>/`~', " " ) .tr( "'\-", "")
+    str.gsub!(/\W\W+/, " ")
+    str.tr(',?.!;:"@#$%^&*()_=+[]{}\|<>/`~—\-\'', "" )
+  end
+
+  def bigram(word_array)
+    words = []
+    word_array.each_with_index { |w, i|
+      words << "#{w}"
+      words << "#{w}_AND_#{word_array[i+1]}" unless word_array[i+1].nil?
+    }
+    return words
+  end
+
+  def include_word?(word)
+    if !(CORPUS_SKIP_WORDS.include?(word.downcase) || word.length <= 2) then
+      return word
+    else
+      return false
+    end
   end
 
 
@@ -158,6 +185,7 @@ class Entry < ActiveRecord::Base
     "can",
     "cant",
     "couldnt",
+    "comments",
     "did",
     "didn",
     "didnt",
@@ -193,10 +221,12 @@ class Entry < ActiveRecord::Base
     "of",
     "on",
     "or",
+    "posts",
     "should",
     "sinc",
     "so",
     "some",
+    "tags",
     "th",
     "than",
     "this",
