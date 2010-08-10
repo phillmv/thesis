@@ -181,6 +181,7 @@ class Validation
       puts "#{c.library} results:"
       puts "Signal: #{ssize} (#{ppc(set.size, ssize)})"
       puts "Noise: #{nsize} (#{ppc(set.size, nsize)})"
+      puts c.print_features
       puts "\n\n"
     end
   end

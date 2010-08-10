@@ -68,4 +68,8 @@ class Classifimicator
 
     end
   end
+
+  def print_features
+    @classifier.try(:print_features)
+  end
 end
