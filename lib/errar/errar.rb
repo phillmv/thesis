@@ -25,7 +25,7 @@ class Validation
     
     CATEGORIES.each do |cat|
       puts "Partinioning #{cat}."
-      @cross_validation[cat] = partition(@training_data[cat])
+      @cross_validation[cat] = partition(@training_data[cat].clone)
 
       @classifiers.each do |c|
         cross_results[c.library] ||= {}
@@ -66,8 +66,6 @@ class Validation
         end
       end
 
-     
-
       puts "\nResetting classifiers...\n\n"
       load_classifiers
     end
@@ -80,29 +78,6 @@ class Validation
       end
       puts "\n"
     end
-
-=begin
-    @held_data = { :signal => [], :noise => [] }
-
-    # ideally should partition, but for now just cleaning up 
-    # current methods will suffice.
-    [:signal, :noise].each do |cat|
-      puts "Partinioning #{cat}."
-      @training_data[cat] = decimate(@training_data[cat], @held_data[cat])
-      train(@training_data[cat], cat)
-    end
-
-    puts "\n\n"
-    # wait until both categories are trained.
-    @classifiers.each do |c|
-
-      [:signal, :noise].each do |cat|
-        validate(c, @held_data[cat], cat)
-      end
-      puts "\n\n"
-
-    end
-=end
   end
 
   def validate(classifier, set, value)
@@ -124,6 +99,19 @@ class Validation
     pos = 0
 
     10.times do |i|
+      size.times do |j|
+        collection[i] ||= []
+        collection[i] << dataset.delete_at(rand(dataset.size))
+        puts dataset.size
+      end
+    end
+
+    dataset.each do |i|
+      collection[9] << i
+    end
+
+=begin
+    10.times do |i|
       #puts "from #{pos} to #{pos+size}"
       if i == 9
         collection[i] = dataset[pos..-1]
@@ -133,6 +121,7 @@ class Validation
 
       pos = pos+size + 1
     end
+=end
 
     return collection
 
@@ -210,13 +199,14 @@ v = Validation.new(classifiers, @liked, @disliked)
 
 v.cross_validate
 
-#@e = Entry.find_by_sql('select * from entries e where e.id in (select m.entry_id from metadata m where m.user_id = 1) order by e.published DESC limit 100')
+=begin
+@e = Entry.find_by_sql('select * from entries e where e.id in (select m.entry_id from metadata m where m.user_id = 1) order by e.published DESC limit 100')
 
-#puts "Testing overall entry population:"
+puts "Testing overall entry population:"
 
-#v = Validation.new(classifiers, @liked, @disliked)
-#v.process(@e)
-
+v = Validation.new(classifiers, @liked, @disliked)
+v.process(@e)
+#=end
 =begin
 #@e = Entry.find_by_sql('select * from entries e where e.id in (select m.entry_id from metadata m where m.user_id = 1) order by e.published DESC limit 1000')
 

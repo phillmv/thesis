@@ -24,7 +24,7 @@ class Classifimicator
       @classifier = NaiveBayes.new(["signal", "noise"])
 
     when CLASSIFIER
-      require 'classifier'
+      require 'gem_classifier/lib/classifier'
       @classifier = Classifier::Bayes.new "signal", "noise"
 
 
