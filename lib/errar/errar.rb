@@ -190,7 +190,7 @@ class Validation
   end
 end
 
-classifiers = %w(classifier naive_bayes)
+classifiers = %w(crm114 naive_bayes)
 
 @liked = Classification.liked(User.first)
 @disliked = Classification.disliked(User.first)
@@ -199,8 +199,8 @@ v = Validation.new(classifiers, @liked, @disliked)
 
 v.cross_validate
 
-=begin
-@e = Entry.find_by_sql('select * from entries e where e.id in (select m.entry_id from metadata m where m.user_id = 1) order by e.published DESC limit 100')
+#=begin
+@e = Entry.find_by_sql('select * from entries e where e.id in (select m.entry_id from metadata m where m.user_id = 1) order by e.published DESC limit 1000')
 
 puts "Testing overall entry population:"
 

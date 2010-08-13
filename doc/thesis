@@ -1,0 +1,47 @@
+problem is an analog of on-line supervised spam filtering (cormack lynam)
+
+implementation
+  Built entirely upon the Ruby on Rails framework backed by a MySQL database and supplied with data through two cron-scheduled daemons. The presentation layer can be easily modified to accomodate the current variety of display devices now commonly available (mobile devices, tablet devices, personal computers).
+
+  A few design goals underlied the overal interface: minimizing friction and optimizing ease of consumption. A common complaint amongst rss feed reader users is the feeling of burden associated with the inbox model most feed readers present - frustration mounts when one is faced with an overwhelming quantity of items to consume. Therefore, it was a conscious design goal to hide the overall quantity of items left in the queue.
+
+  Yet, experimentation with a limited set of users suggests that some sense of continuity, or the feeling of accomplishment that comes with finishing a stream of content is important. If an implied goal of the tool is to *reduce* overall levels of procrastination, it does us no good to confront users with a seemingly infinite stream of content. 
+  
+  This opens the door to a variety of interesting experiments and increasing customizations. 
+
+limitations / further research
+  - twitter
+  twitter is a ripe arena to apply some of these concepts. Research involving SMS spam (a practically inexistent problem in the West but apparently rife throughout Asia) suggests that even equally simple text classification algorithms can reap significant dividends.
+
+  At the time of writing, the only client performing any kind of filtering seems limited to eliminating specific keywords, and the limited feature pool probably suffers from the same limitations described with rss feeds at large described in this paper.
+
+
+technical issues
+  - the problem with rss
+  as with any protocol, there is a wide divergence between the technical specification and the myriad implementations, hacked together solutions and use cases available in the wild. 
+
+  Issues surrounding malformed rss feeds are completely invisible to the end user
+  
+  As a result any useful parser must take Postel's Law to heart and be particularly forgiving. Fortunately, most of the heavy lifting can be accomodated by a wide range of available libraries. A non trivial quantity of work goes into guessing the intent of the feed author; common issues include the lack of url attributes, missing title attributes and the use of relative URIs inside resource urls. This project utilized so and so's Feedzirra, though the state of the art is undeniably Mark Pilgrim's feed_parser (which unfortunately, is written in python and thus not suitable for this project).
+
+  - platform woes
+  Ruby on Rails is an excellent prototyping environment that, for the experienced web developer, abstracts away many trivial concerns and greatly speeds up development. Unfortunately, MRI, the canonical Ruby interpreter, is still something of an immature platform and consequently a non trivial quantity of time was spent chasing nigh-invisible memory leaks and namespace collisions.
+
+  - the problem with classifiers
+
+
+  
+goals of project
+explore the use of spam filtering techniques on rss feeds
+  custom reader UI is an increasingly popular trend, i.e. readability and instapaper
+  web is a grand repository of information, but is poorly suited for skimming content - not a problem back when only a few sites might command our attention, but overwhelming today
+
+  from a user perspective, similar problem: overwhelmed with low ROI (of attention) content
+  increasing trend amongst the tech literati to abandon the format due to this problem
+
+proposed solutions: unobtrusive UI coupled with machine learning of one form or another
+  differences in problems: blog content is almost by definition ephemeral; unlike email it is not essential that it all be consumed, i.e. extremely high tolerance to 'missing out'.
+  allows us to approach the problem from the perspective of user-life-management - instead of an inbox approach, with defined remaining capacities, better to manage people's reading for them; increase filtering according to available time allotted
+
+  differences in approach
+  different classifiers yield different precision metrics which can be utilized for slightly different types of filtering
