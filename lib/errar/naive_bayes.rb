@@ -61,6 +61,17 @@ class NaiveBayes
     return pretty
   end
 
+  def print_features 
+    @words.keys.each { |k|
+      arr = @words[k].sort {|a,b| a[1]<=>b[1]} 
+      puts "#{k}\n----------------"
+      arr[(arr.size - 50)..-1].each do |pair|
+        puts "#{pair[0]} - #{pair[1]} #{pair[0][0].to_i}" unless pair[1] == 1
+      end
+    }
+  end
+
+
   private
 
   # the probability of a word in this category
@@ -122,16 +133,6 @@ class NaiveBayes
       #end
     end
     return d
-  end
-
-  def print_features 
-    @words.keys.each { |k|
-      arr = @words[k].sort {|a,b| a[1]<=>b[1]} 
-      puts "#{k}\n----------------"
-      arr[(arr.size - 50)..-1].each do |pair|
-        puts "#{pair[0]} - #{pair[1]}" unless pair[1] == 1
-      end
-    }
   end
 
 end

@@ -70,6 +70,8 @@ class Classifimicator
   end
 
   def print_features
-    @classifier.try(:print_features)
+    if @classifier.methods.include? "print_features"
+      @classifier.print_features
+    end
   end
 end

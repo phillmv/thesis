@@ -74,51 +74,44 @@ class Entry < ActiveRecord::Base
     # author names are far less unique than what is ideal
     str << self.prefix("author", "#{self.author} #{prefix("", self.subscription.title)}") + " "
     
-    #str <<  self.prefix("author", self.author)
     str << self.prefix("subscription", self.subscription.title)
 
-    str << bigram(self.title.split(" ")).collect { |w|
-      if include_word?(w) then
-        word = without_punctuation(w)
-        " #{prefix("title", word) } #{word} "
-      end
-    }.join(" ")
-
-    Nokogiri::HTML(self.essence).search('a').each do |link|
-      bigram(link.content.split(" ")).collect do |w|
-        if include_word?(w) then 
-          word = without_punctuation(w)
-        str << " #{prefix("link", word)} #{word} "
-        end
-      end
-
-      # URI parser is way more strict than desirable
-      begin
-        url = URI.split(link.attributes["href"])
-        str << without_punctuation(url[2])
-      rescue Exception => e
-        #puts "Exception on: #{self.id} — #{link.attributes["href"]}"
-      end
-
+    concat_bigram_prefix(str, self.title, "title")
+    
+    [['a', 'href'], ['img', 'src']].each do |pair|
+      tag, _attr = pair[0], pair[1]
+   
+      # LOL AWESOME METHOD CALL LOL
+      concat_html_attr(str,
+                       Nokogiri::HTML(self.essence),
+                       tag,
+                       _attr,
+                       tag == 'a' ? {:bigram => "link"} : {})
     end
-
-
+    
     raw_body_text = Nokogiri::HTML("#{self.essence}").text.gsub(/\s/, " ")
+
+    bigram(raw_body_text.split(" ")).each do |word|
+      puts 'holy shit' if word == 'l'
+      str << " #{word} "
+    end
+=begin
     without_punctuation(raw_body_text).split(" ").each do |word|
       str << " #{word} " if include_word?(word)
     end
+=end
 
     return str
   end
-  
-  def essence
+
+   def essence
     if content.nil?
       return summary
     else
       return content
     end
   end
-
+  
   def self.shuffle!(arr) 
     arr.each_index do |i| 
       j = rand(arr.length-i) + i
@@ -130,7 +123,7 @@ class Entry < ActiveRecord::Base
   # assumes field is a single word, removes spaces from text and appends a 
   # space at the end for serial concatenation.
   def prefix(field = nil, text = nil)
-    return " " if text.nil?
+    return " " if text.nil? or field.nil? or text.empty?
     "#{field}#{IFS}#{text.gsub(/ /,'')}"
   end
 
@@ -166,23 +159,51 @@ class Entry < ActiveRecord::Base
   def without_punctuation(str)
     return if str.nil?
     str.gsub!(/\W\W+/, " ")
-    str.tr(',?.!;:"@#$%^&*()_=+[]{}\|<>/`~—\-\'', "" )
+    str = str.tr(',?.!;:"@#$%^&*()_=+[]{}\|<>/`~—\-\'' + 194.chr, "" )
+    str.strip
   end
 
   def bigram(word_array)
     words = []
     word_array.each_with_index { |w, i|
-      if include_word?(w)
-        words << "#{w}"
-        words << "#{w}_AND_#{word_array[i+1]}" unless word_array[i+1].nil? || !include_word?(word_array[i+1])
+      if word = include_word?(w)
+        words << "#{word}"
+
+        if !word_array[i+1].nil? && second_word = include_word?(word_array[i+1])
+          words << "#{word}_AND_#{second_word}" 
+        end
       end
     }
     return words
   end
 
+  def concat_html_attr(str, html, tag, _attr, opt = {})
+    html.search(tag).each do |elem|
+      if opt[:bigram]
+        concat_bigram_prefix(str, elem.content, opt[:bigram])
+      end
+      begin
+        url = URI.split(elem.attributes[_attr])
+        str << " #{without_punctuation(url[2])} "
+      rescue Exception => e
+      end    
+    end
+  end
+
+  def concat_bigram_prefix(str, text, _prefix = nil)
+    bigram(text.split(" ")).each do |w|
+      if word = include_word?(w) then 
+        str << " #{prefix(_prefix, word)} #{word} "
+      end
+    end
+    return str
+  end
+
+
   def include_word?(word)
-    if !(CORPUS_SKIP_WORDS.include?(word.downcase) || word.length <= 2) then
-      return word
+    w = without_punctuation(word)
+    if !(CORPUS_SKIP_WORDS.include?(w.downcase) || w.length <= 2) then
+      return w
     else
       return false
     end
