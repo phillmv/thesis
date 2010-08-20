@@ -6,9 +6,19 @@ As programmers we are trained to reduce the complex reality surrounding us into 
 
 By early 2004 there were seven incompatible versions of RSS(http://diveintomark.org/archives/2004/02/04/incompatible-rss) which now also competed against a similar, yet more flexible, format called Atom. Atom was promptly adopted by Google and pushed across all of their properties, immediately assuring it a significant market share. The exact differences between the formats are, for our purposes, largely irrelevant and interesting to no one except XML aficionados and the authors of feed parsing libraries (blessed be their souls). Much like with HTML, very few people have bothered reading any of the specs and instead target their preferred parser implementations. 
 
-What is significant is that it suddenly became necessary for web authors to offer some kind of syndication mechanism for their readers. Today, it is almost unthinkable for any website with regularly updating content to not provide a syndication feed. Indeed, in a pointlessly confusing move, many choose to offer their users the choice of two or three different formats. The omnipresence of a syndicated, machine readable feed enabled a variety of applications to take root. The most significant of these is probably podcasting, which embeds the url of an audio file and allows client applications to consume them on a regularly ocurring schedule. Invented in the early 2000s, the medium rose to prominence around 2004 and has since become a staple of online audio distribution.
+What is significant is that it suddenly became necessary for web authors to offer some kind of syndication mechanism for their readers. The omnipresence of a syndicated, machine readable feed enabled a variety of applications to take root. The most significant of these is probably podcasting, which embeds the url of an audio file and allows client applications to consume them on a regularly ocurring schedule. Invented in the early 2000s, the medium rose to prominence around 2004 and has since become a staple of online audio distribution. Today, it is almost unthinkable for any website with regularly updating content to not provide a syndication feed. Indeed, in a pointlessly confusing move, many choose to offer their users the choice of two or three different formats. 
 
 
+For the purposes of this paper, 'RSS feeds' shall refer to all commonly used machine readable syndication formats.
+
+The Problem
+
+Despite their ubiquity, almost no one uses RSS feeds. All rigorous interest in its adoption rate seems to have waned by 2005, but by 2008 it was estimated that at most 11% of internet users made some use of it (http://profy.com/2008/10/20/low-rss-adoption-is-it-about-tools-or-needs/). As a result, all serious use of feed aggregators seems to be limited to the technically proficient.
+
+- mention how it becomes overwhelming
+- mention how people in turn are dropping it out
+- software wastes too much of our time; the amount of content out on the internet greatly outpaces our capacity to consume it
+- 
 
 initially, the poor performance of the classifiers is disheartening, but in regards to our original problem (i.e. reducing the total VOLUME of incoming entries) it is far from useless. Different classifiers with different performance characteristics can be introduced depending on the user's preferences. 
 
