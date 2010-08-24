@@ -18,28 +18,52 @@ This is unfortunate, as feed aggregators can be immensely useful tools. They con
 
 Most feed readers out on the market today are fairly straightforward and present the user to what amounts to a queue, roughly modeled on the inbox metaphor email clients use. All content items are treated the same and are usually sorted by date and some user-input categorization (usually, by grouping different sources together). This works just fine if we are dealing with a limited number of subscriptions, but past a certain threshold (say, 200 regularly updating blogs), this quickly turns out to be unmanageable and before long it begins to impose a large cognitive strain on its users.
 
-At this stage, a curious psychological event occurs. Although the burden imposed by an excessive quantity of feed subscriptions grows roughly linearly with the amount of feeds subscribed to, there seems to exist an abrupt cut off point where the cost associated with keeping up to date exceeds the perceived benefits of subscription. Faced with an overwhelming quantity of information to process on a daily basis, it seems that many if not most users simply give up entirely on the process(http://www.readwriteweb.com/archives/rss_reader_market_in_disarray.php http://www.techcrunchit.com/2009/05/05/rest-in-peace-rss/ http://al3x.net/2009/07/18/fever-and-the-future-of-feed-readers.html). What began as a panacea slowly grows into an affliction.
+At this stage, a curious psychological event occurs. Although the burden imposed by an excessive quantity of feed subscriptions grows roughly linearly with the quantity of subscriptions, there seems to exist an abrupt cut off point where the cost associated with keeping up to date exceeds the perceived benefits of subscription. Faced with an overwhelming quantity of information to process on a daily basis, it seems that most users prefer to simply give up entirely on the process instead of investing even more time reducing their commitment(http://www.readwriteweb.com/archives/rss_reader_market_in_disarray.php http://www.techcrunchit.com/2009/05/05/rest-in-peace-rss/ http://al3x.net/2009/07/18/fever-and-the-future-of-feed-readers.html). What began as a panacea slowly grows into an affliction.
+
+However, people have a nearly insatiable desire for new information. So, having freed up several hours what have these power users turned to instead? The answer lies in the filtering capacity of social networks. Twitter and Facebook, to name just the most significant ones, are in effect used as news distribution networks, with the caveat that information selected by one's peers is significantly more likely to be of high value. Yet even these mediums suffer from the same predicament: the total amount of subscriptions are doomed to grow until they too become unmanageable. In the end, they act just like any other news aggregator, and are bound to suffer from the same limitations.
 
 
 The problem thus can be roughly defined as that of an excess of volume. Not all information is created equally. Not everything out there will prove relevant or interesting to any individual person; furthermore, as the total amount of content grows, the amount of undesirable content is likely to grow much faster than the total quantity of relevant information. Seeing as we are unable to distinguish between more and less valuable information before we consume it, uninteresting content quickly becomes a significant time sink.
 
-In the end, people have a nearly insatiable desire for new information. So, having freed up several hours what have these power users turned to instead? The answer lies in the filtering capacity of social networks. Twitter and Facebook, to name just the most significant ones, are in effect used as news distribution networks, with the caveat that information selected by one's peers is vastly more likely to be of high value. 
+
+Here I seek to argue that one of the key issues underlying this problem is that there is a gap between the ability of our tools to work with the way we actually read content. The inbox metaphor, applied to feed aggregators, does not scale and past a certain threshold is fundamentally broken. The experience of reading as entertainment turns out to be substantially different from the experience of reading email. Email commands all of our attention; even if we choose to ignore most of the messages we receive, it's still fundamentally important that we receive them in the first place. 
+
+Reading, as entertainment, does not usually suffer from this problem. Take a newspaper, for example. Few people have the time or the interest to read one from cover to cover. Editors select the most important stories and concentrate them in the very first or very last few pages. While we may carefully read the front page and the editorial section, we're very likely to only skim the content in between. Unfortunately for us, most feed readers operate on the assumption that all content is equally worthy of our attention. Instead of being presented with the most relevant posts of the day, items are queued up and stored indefinitely until we get around to dismissing them from the system. 
+
+So, how can we design a better system? 
+- unobtrusive UI
+ minimize friction, improve readability
+- intelligent filtering
+ reduce overall volume
+ how can we achieve this?
+  fairly simple text classification techniques, like bayes' and a few other heuristics allow us to make mostly correct inferences about what is and what is not important
+  underlying assumption: most everything is noise, or not dramatically important - false positives AND false negatives have minimal impact. Ideally minimize false positives, of course. 
+
+FEATURE SELECTION
+- Used Paul Graham's spam essays as a basis from which to improve upon
+  meaningful ways in which feeds differ from spam:
+  feeds are effectively white lists, so more concerned with identifying meaningful topics - variation between noise and signal isn't as pronounced
+  
+  unlike email, there isn't any highly-significant metadata like email headers, or the presence of images, or complicated markup or so on.
+
+- the meaning of markup
+  decision to weigh titles and links and urls more heavily. this is achieved by parsing the text and doubling or tripling the occurance in the corpus of these significant tokens.
+
+  link text, link urls, img alt text, image urls, titles and authors
+
+  experimentation with bigrams and trigrams for various features and the entire corpus
+
+  {{{ great graph opportunity here }}}
 
 
-The trend to move  twitter or other social networks as a content aggregator 
+  
 
-
-inbox metaphor broken - what is needed is a stream, not a queue
-paradoxical problem with overabundance of choice
-
-feature selection
-
-content quality largely self selecting
+{{{content quality largely self selecting
 
 - mention how it becomes overwhelming
 - mention how people in turn are dropping it out
 - software wastes too much of our time; the amount of content out on the internet greatly outpaces our capacity to consume it
-- 
+}}}
 
 initially, the poor performance of the classifiers is disheartening, but in regards to our original problem (i.e. reducing the total VOLUME of incoming entries) it is far from useless. Different classifiers with different performance characteristics can be introduced depending on the user's preferences. 
 
@@ -60,6 +84,9 @@ limitations / further research
 
   At the time of writing, the only client performing any kind of filtering seems limited to eliminating specific keywords, and the limited feature pool probably suffers from the same limitations described with rss feeds at large described in this paper.
 
+  - including social graph to perform further optimizations
+  
+
 
 technical issues
   - the problem with rss
@@ -69,10 +96,16 @@ technical issues
   
   As a result any useful parser must take Postel's Law to heart and be particularly forgiving. Fortunately, most of the heavy lifting can be accomodated by a wide range of available libraries. A non trivial quantity of work goes into guessing the intent of the feed author; common issues include the lack of url attributes, missing title attributes and the use of relative URIs inside resource urls. This project utilized so and so's Feedzirra, though the state of the art is undeniably Mark Pilgrim's feed_parser (which unfortunately, is written in python and thus not suitable for this project).
 
+  - the problem with markup
+
+  A lot of effort was then spent on massaging the input text and appropriately stripping out punctuation. 
+
   - platform woes
   Ruby on Rails is an excellent prototyping environment that, for the experienced web developer, abstracts away many trivial concerns and greatly speeds up development. Unfortunately, MRI, the canonical Ruby interpreter, is still something of an immature platform and consequently a non trivial quantity of time was spent chasing nigh-invisible memory leaks and namespace collisions.
 
   - the problem with classifiers
+
+  performance varied wildly with algorithms and individual libraries. at the time of writing the exact cause is unknown but in theory our high tolerance of false positives and false negatives allows us to experiment with different rates of filtering - different text classifiers with different precision metrics can be used to filter more or less aggressively, i.e. crm114 flags about ~20% of all entries as noise, but our custom naive-bayes flags ~80% as noise. Using {{insert formula}} to use as a confidence ratio, we can adjust the rate of flow of entries into the stream.
 
 
   
