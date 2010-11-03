@@ -20,7 +20,7 @@ CAT.each do |c|
   end
 end
 
-@n.classify(Entry.last.classifier_text)
+puts @n.classify(Entry.last.classifier_text)
 puts "lol eof"
 
 

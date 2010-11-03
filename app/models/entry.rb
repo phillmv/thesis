@@ -68,6 +68,7 @@ class Entry < ActiveRecord::Base
   def classifier_text
     # let's start simple. Ideally should be adding qualifiers like
     # weighing link text more heavily.
+    #puts "OMG CLASSIFY"
     
     str = ""
 
@@ -92,7 +93,6 @@ class Entry < ActiveRecord::Base
     raw_body_text = Nokogiri::HTML("#{self.essence}").text.gsub(/\s/, " ")
 
     bigram(raw_body_text.split(" ")).each do |word|
-      puts 'holy shit' if word == 'l'
       str << " #{word} "
     end
 =begin
@@ -191,10 +191,8 @@ class Entry < ActiveRecord::Base
   end
 
   def concat_bigram_prefix(str, text, _prefix = nil)
-    bigram(text.split(" ")).each do |w|
-      if word = include_word?(w) then 
-        str << " #{prefix(_prefix, word)} #{word} "
-      end
+    bigram(text.split(" ")).each do |word|
+      str << " #{prefix(_prefix, word)} #{word} "
     end
     return str
   end

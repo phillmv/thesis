@@ -4,6 +4,8 @@ development:
   adapter: mysql
   user: root
   database: feeds
+  pool: 8
+  reconnect: true
 
 
 # Warning: The database defined as "test" will be erased and
@@ -19,3 +21,4 @@ production:
   adapter: mysql  
   user: root
   database: feeds
+  reconnect: true

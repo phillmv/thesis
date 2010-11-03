@@ -21,6 +21,7 @@ class Validation
 
     @cross_validation = {}
     cross_results = {}
+    precision = {}
 
     
     CATEGORIES.each do |cat|
@@ -34,6 +35,9 @@ class Validation
     end
 
     @held_data = {}
+    @classifiers.each do |c|
+      precision[c.library] = {}
+    end
     
     10.times do |i|
 
@@ -51,11 +55,17 @@ class Validation
       end
 
 
+
       # wait until both categories are trained.
       @classifiers.each do |c|
+        precision[c.library][i] = {}
+        
+        puts "Validating with #{c.library}:"
 
         CATEGORIES.each do |cat|
+          
           res = validate(c, @held_data[cat], cat)
+          precision[c.library][i][cat] = { :tp => res[0], :fn => res[2] }
           
           prev_size = cross_results[c.library][cat][:size]
           prev_correct = cross_results[c.library][cat][:correct]
@@ -64,6 +74,8 @@ class Validation
           cross_results[c.library][cat][:correct] = res[0] + prev_correct
           
         end
+
+        precision_recall(precision[c.library][i], :signal)
       end
 
       puts "\nResetting classifiers...\n\n"
@@ -78,19 +90,40 @@ class Validation
       end
       puts "\n"
     end
+
+    total_precision = {}
+    @classifiers.each do |c|
+      total_precision[c.library] = {}
+      CATEGORIES.each do |cat|
+        total_precision[c.library][cat] = { :tp => 0, :fn => 0 }
+        cat_hash = total_precision[c.library][cat]
+        10.times do |i|
+          cat_hash[:tp] = precision[c.library][i][cat][:tp] + cat_hash[:tp]
+
+          cat_hash[:fn] = precision[c.library][i][cat][:fn] + cat_hash[:fn]
+        end
+      end
+
+      puts "\n\nTotal classification stats for #{c.library}:"
+      precision_recall(total_precision[c.library], :signal)
+    end
+    debugger 
+    puts "\n"
   end
 
   def validate(classifier, set, value)
-    puts "Validating #{value} class with #{classifier.library}:"
-    p_correct = 0
+    true_p = 0
+    false_n = 0
     set.each do |i|
       if classifier.predict(i.classifier_text) == value then
-        p_correct = p_correct + 1
+        true_p = true_p + 1
+      else
+        false_n = false_n + 1
       end
     end
-    puts "ERRAR RATE: #{p_correct} / #{set.size} (#{ppc(set.size, p_correct)})"
-
-    return [ p_correct, set.size ]
+    puts "#{value}: #{true_p} / #{set.size}\t\t\t #{ppc(set.size, true_p)}"
+    
+    return [ true_p, set.size, false_n ]
   end
 
   def partition(dataset)
@@ -102,7 +135,7 @@ class Validation
       size.times do |j|
         collection[i] ||= []
         collection[i] << dataset.delete_at(rand(dataset.size))
-        puts dataset.size
+        #puts dataset.size
       end
     end
 
@@ -188,9 +221,34 @@ class Validation
   def ppc(total, sub)
     "%0.2f\%" % ((sub.to_f / total.to_f) * 100)
   end
+
+  def precision_recall(results, perspective)
+    true_p = 0
+    false_n = 0
+    
+    true_n = 0
+    false_p = 0
+
+    results.each_pair do |k, v|
+      if k == perspective
+        true_p = v[:tp]
+        false_n = v[:fn]
+      else
+        true_n = v[:tp]
+        false_p = v[:fn]
+      end
+    end
+    puts "Precision is: #{true_p} / #{true_p} + #{false_p} =\t\t #{ppc(true_p + false_p, true_p)}"
+    puts "Recall is: #{true_p} / #{true_p} + #{false_n} =\t\t #{ppc(true_p + false_n, true_p)}"
+    puts "True Neg is #{true_n} / #{true_n} + #{false_p} =\t\t #{ppc(true_n + false_p, true_n)}"
+    puts "Accuracy is #{true_p} + #{true_n} / #{true_p} + #{true_n} + #{false_p} + #{false_n} =\t #{ppc(true_p + true_n + false_p + false_n, true_p + true_n)}"
+    puts "\n\n"
+    
+  end
+
 end
 
-classifiers = %w(crm114 naive_bayes)
+classifiers = %w(classifier naive_bayes crm114)
 
 @liked = Classification.liked(User.first)
 @disliked = Classification.disliked(User.first)
