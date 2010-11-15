@@ -4,15 +4,17 @@ require 'stemmer'
 class NaiveBayes
 
   # provide a list of categories for this classifier
-  def initialize(categories)
+  def initialize(categories, threshold = nil)
     # keeps a hash of word count for each category
     @words = Hash.new		
     @total_words = 0		
     # keeps a hash of number of documents trained for each category
     @categories_documents = Hash.new		
     @total_documents = 0
-    @threshold = 1.3
-    
+    @threshold = threshold
+    @threshold ||= 0
+    puts "Threshold is now: #{@threshold}"
+
     # keeps a hash of number of number of words in each category
     @categories_words = Hash.new
     
@@ -46,8 +48,22 @@ class NaiveBayes
 
   # classfiy the document into one of the categories
   def classify(document, default='unknown')
+    p = probabilities(document)
+    sum = p["noise"] + p["signal"]
+    noise = p["noise"]/sum
+    signal = p["signal"]/sum
+    if noise > @threshold
+      return "noise"
+    elsif signal > @threshold
+      return "signal"
+    else
+      return default
+    end
     sorted = probabilities(document).sort {|a,b| a[1]<=>b[1]}
+    debugger
     best,second_best = sorted.pop, sorted.pop
+    File.open("ratios2.txt", "a") { |io| io.puts second_best[1]/best[1] }
+    
     return best[0] if best[1]/second_best[1] > @threshold
     return default
   end

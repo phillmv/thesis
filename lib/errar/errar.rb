@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require File.expand_path('../../../config/environment',  __FILE__)
+require 'growl'
 
 # fuck my life. I need to find out why this happens...
 Entry.last.classifier_text
@@ -11,9 +12,11 @@ class Validation
   attr_reader :proc_entries, :classifiers
   CATEGORIES = [:signal, :noise]
 
-  def initialize(classifiers, signal_set, noise_set)
-    load_classifiers(classifiers)
+  def initialize(classifiers, signal_set, noise_set, threshold = nil)
+    @threshold = threshold
+    load_classifiers(classifiers, threshold)
     @training_data = { :signal => signal_set, :noise => noise_set } 
+    File.open("results.txt", "a") { |i| i.puts "\nThreshold is: #{threshold}"}
   end
 
   def cross_validate
@@ -83,12 +86,17 @@ class Validation
     end
 
     puts "----------"
-    cross_results.each_pair do |lib, v|
-      puts "Average results for #{lib}:"
-      v.each_pair do |cat, res|
-        puts "#{cat}: #{ppc(res[:size], res[:correct])}"
+    File.open("results.txt", "a") do |io|
+      cross_results.each_pair do |lib, v|
+        puts "Average results for #{lib}:"
+        io.puts "Average results for #{lib}:"
+        v.each_pair do |cat, res|
+          puts "#{cat}: #{ppc(res[:size], res[:correct])}"
+          io.puts "#{cat}: #{ppc(res[:size], res[:correct])}"
+        end
+        puts "\n"
+        io.puts "\n"
       end
-      puts "\n"
     end
 
     total_precision = {}
@@ -105,9 +113,18 @@ class Validation
       end
 
       puts "\n\nTotal classification stats for #{c.library}:"
-      precision_recall(total_precision[c.library], :signal)
+      
+      stat_val = precision_recall(total_precision[c.library], :signal)
+      stats = "Acc: #{stat_val[0]}\nPres: #{stat_val[1]}\nRecall: #{stat_val[2]}"
+      File.open("results.txt", "a") do |io|
+        io.puts "Total classification stats for #{c.library}:"
+        io.puts stats
+      end
+
+      Growl.notify { 
+        self.message = "For thres: #{@threshold}:\n#{stats}"
+      }
     end
-    debugger 
     puts "\n"
   end
 
@@ -142,19 +159,6 @@ class Validation
     dataset.each do |i|
       collection[9] << i
     end
-
-=begin
-    10.times do |i|
-      #puts "from #{pos} to #{pos+size}"
-      if i == 9
-        collection[i] = dataset[pos..-1]
-      else
-        collection[i] = dataset[pos..pos+size]
-      end
-
-      pos = pos+size + 1
-    end
-=end
 
     return collection
 
@@ -209,11 +213,12 @@ class Validation
   end
 
   private
-  def load_classifiers(classifiers = nil)
+  def load_classifiers(classifiers = nil, threshold = nil)
+    @threshold ||= threshold
     @loaded_classifiers ||= classifiers
     @classifiers = []
     @loaded_classifiers.each do |c| 
-      @classifiers << Classifimicator.new(c)
+      @classifiers << Classifimicator.new(c, @threshold)
     end
 
   end
@@ -238,88 +243,64 @@ class Validation
         false_p = v[:fn]
       end
     end
-    puts "Precision is: #{true_p} / #{true_p} + #{false_p} =\t\t #{ppc(true_p + false_p, true_p)}"
-    puts "Recall is: #{true_p} / #{true_p} + #{false_n} =\t\t #{ppc(true_p + false_n, true_p)}"
-    puts "True Neg is #{true_n} / #{true_n} + #{false_p} =\t\t #{ppc(true_n + false_p, true_n)}"
-    puts "Accuracy is #{true_p} + #{true_n} / #{true_p} + #{true_n} + #{false_p} + #{false_n} =\t #{ppc(true_p + true_n + false_p + false_n, true_p + true_n)}"
-    puts "\n\n"
-    
+
+      puts "Precision is: #{true_p} / #{true_p} + #{false_p} =\t\t #{ppc(true_p + false_p, true_p)}"
+      puts "Recall is: #{true_p} / #{true_p} + #{false_n} =\t\t #{ppc(true_p + false_n, true_p)}"
+      puts "True Neg is #{true_n} / #{true_n} + #{false_p} =\t\t #{ppc(true_n + false_p, true_n)}"
+      puts "Accuracy is #{true_p} + #{true_n} / #{true_p} + #{true_n} + #{false_p} + #{false_n} =\t #{ppc(true_p + true_n + false_p + false_n, true_p + true_n)}"
+      puts "\n\n"
+
+      # accuracy, precision, recall
+      [ ppc(true_p + true_n + false_p + false_n, true_p + true_n),
+        ppc(true_p + false_p, true_p),
+        ppc(true_p + false_n, true_p) ]
   end
 
 end
 
-classifiers = %w(classifier naive_bayes crm114)
+File.open("results.txt", "a") do |io| 
+  io.puts "@@@\n#{Time.now.strftime("%d-%m-%Y - %H:%M")}" 
+end
+
+
+classifiers = %w(naive_bayes)
 
 @liked = Classification.liked(User.first)
 @disliked = Classification.disliked(User.first)
 
-v = Validation.new(classifiers, @liked, @disliked)
+=begin
+c = Classifimicator.new("naive_bayes")
+@disliked.each do |l| c.train :noise, l.classifier_text end
+@liked.each do |l| c.train :signal, l.classifier_text end
 
-v.cross_validate
+c.predict(Entry.find(13456).classifier_text)
+#debugger
+sleep 10
+=end
 
-#=begin
+(1..10).each do |i|
+  thres = i * 0.1
+  puts "Threshold: #{thres}"
+  v = Validation.new(classifiers, @liked, @disliked, thres)
+  v.cross_validate
+  puts "##########################"
+end
+
+Growl.notify do 
+    self.message = "Hey asshole, it's done."
+    self.icon = :application
+    sticky!
+end
+
+
+
+
+=begin
 @e = Entry.find_by_sql('select * from entries e where e.id in (select m.entry_id from metadata m where m.user_id = 1) order by e.published DESC limit 1000')
 
 puts "Testing overall entry population:"
 
 v = Validation.new(classifiers, @liked, @disliked)
 v.process(@e)
-#=end
-=begin
-#@e = Entry.find_by_sql('select * from entries e where e.id in (select m.entry_id from metadata m where m.user_id = 1) order by e.published DESC limit 1000')
-
-debugger
-#train(@classifier, @liked, :liked)
-#train(@classifier, @disliked, :disliked)
-
-predictions = { :liked => [], :disliked => [] }
-@e.each do |i|
-  puts "Processing: #{i.attributes["id"]}"
-  predictions[@classifier.predict(i.classifier_text)] << i
-end
-
-debugger
-
-
-
-=begin
-@classifiers = [ 
-  Classifimicator.new("bishop"),
-  Classifimicator.new("crm114"),
-  Classifimicator.new("naive_bayes"),
-  Classifimicator.new("classifier")
-]
-@liked = Classification.liked(User.first)
-@disliked = Classification.disliked(User.first)
-
-puts "\n\n"
-puts "Total signal size: #{@liked.size}"
-puts "Total noise size: #{@disliked.size}"
-
-@test_l = []
-@liked = decimate(@liked, @test_l)
-
-@test_d = []
-@disliked = decimate(@disliked, @test_d)
-
-puts "\n\n"
-puts "Size of signal-test: #{@test_l.size}"
-puts "Size of noise-test: #{@test_d.size}"
-puts "\n\n"
-puts "Remaining signal: #{@liked.size}\n"
-puts "Remaining noise: #{@disliked.size}\n"
-
-@classifiers.each do |classifier|
-  puts "Training #{classifier.library}"
-  train(classifier, @liked, :liked)
-  train(classifier, @disliked, :disliked)
-end
-
-puts "\nTesting instances:"
-
-@classifiers.each do |classifier|
-  validate(classifier, @test_l, :liked)
-  validate(classifier, @test_d, :disliked)
-end
-
 =end
+

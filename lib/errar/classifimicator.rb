@@ -7,7 +7,7 @@ class Classifimicator
   @classifier = nil
   attr_reader :library
 
-  def initialize(library = "classifier")
+  def initialize(library = "classifier", threshold = nil)
     @library = library
     
     case @library
@@ -21,7 +21,7 @@ class Classifimicator
 
     when NAIVE
       require 'naive_bayes'
-      @classifier = NaiveBayes.new(["signal", "noise"])
+      @classifier = NaiveBayes.new(["signal", "noise"], threshold)
 
     when CLASSIFIER
       require 'gem_classifier/lib/classifier'
