@@ -5,7 +5,7 @@ class Subscription < ActiveRecord::Base
  
   validates_uniqueness_of :url
   validates_uniqueness_of :feed_url
-  validate :feed_url_integrity
+  #validate :feed_url_integrity
   validate :feed_integrity
   
   after_validation_on_create :parse

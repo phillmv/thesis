@@ -41,6 +41,7 @@ class SubscriptionsController < ApplicationController
   # POST /subscriptions.xml
   def create
     @subscription = Subscription.find_or_create_by_feed_url(params[:subscription][:feed_url])
+    @subscription.save!
    
     @current_user.subscribe(@subscription)
 

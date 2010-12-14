@@ -21,7 +21,10 @@ class StreamUpdater
       c = Classifier::Bayes.new "liked", "disliked"
 
       u.liked.each { |e| 
+        puts "OMG LOL"
         c.train_liked e.classifier_text 
+        puts "OMG LOL2"
+        
       }
 
       u.disliked.each { |e| 

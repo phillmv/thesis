@@ -263,7 +263,7 @@ File.open("results.txt", "a") do |io|
 end
 
 
-classifiers = %w(naive_bayes)
+classifiers = %w(crm114)
 
 @liked = Classification.liked(User.first)
 @disliked = Classification.disliked(User.first)
@@ -276,7 +276,7 @@ c = Classifimicator.new("naive_bayes")
 c.predict(Entry.find(13456).classifier_text)
 #debugger
 sleep 10
-=end
+#=end
 
 (1..10).each do |i|
   thres = i * 0.1
@@ -285,6 +285,14 @@ sleep 10
   v.cross_validate
   puts "##########################"
 end
+=end
+
+#@e = Entry.find_by_sql('select * from entries e where e.id in (select m.entry_id from metadata m where m.user_id = 1) order by e.published DESC limit 1000')
+
+puts "Testing overall entry population:"
+
+v = Validation.new(classifiers, @liked, @disliked)
+v.cross_validate
 
 Growl.notify do 
     self.message = "Hey asshole, it's done."
@@ -296,11 +304,5 @@ end
 
 
 =begin
-@e = Entry.find_by_sql('select * from entries e where e.id in (select m.entry_id from metadata m where m.user_id = 1) order by e.published DESC limit 1000')
-
-puts "Testing overall entry population:"
-
-v = Validation.new(classifiers, @liked, @disliked)
-v.process(@e)
 =end
 

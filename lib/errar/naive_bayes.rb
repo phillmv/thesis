@@ -81,7 +81,7 @@ class NaiveBayes
     @words.keys.each { |k|
       arr = @words[k].sort {|a,b| a[1]<=>b[1]} 
       puts "#{k}\n----------------"
-      arr[(arr.size - 50)..-1].each do |pair|
+      arr[(arr.size - 200)..-1].each do |pair|
         puts "#{pair[0]} - #{pair[1]} #{pair[0][0].to_i}" unless pair[1] == 1
       end
     }
