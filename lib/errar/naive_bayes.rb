@@ -1,6 +1,8 @@
 require 'rubygems'
 require 'stemmer'
 
+# borrowed liberally from http://blog.saush.com/2009/02/11/naive-bayesian-classifiers-and-ruby/ to whom I am eternally grateful.
+
 class NaiveBayes
 
   # provide a list of categories for this classifier
